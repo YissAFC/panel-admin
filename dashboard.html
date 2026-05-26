@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel Admin — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a25;
+      --border: #1e1e2e;
+      --accent: #e94560;
+      --text: #e8e8f0;
+      --muted: #555570;
+      --success: #4ade80;
+      --warning: #facc15;
+      --error: #f87171;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(233,69,96,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(233,69,96,0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    /* NAVBAR */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .admin-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 2px;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* MAIN */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+      animation: fadeIn 0.5s ease both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .page-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ADD USER */
+    .add-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 24px;
+      margin-bottom: 24px;
+      position: relative;
+      animation: fadeIn 0.5s 0.1s ease both;
+    }
+
+    .add-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .section-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .add-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .add-row input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .add-row input:focus { border-color: var(--accent); }
+    .add-row input::placeholder { color: var(--muted); }
+
+    .btn-add {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 2px;
+      padding: 10px 20px;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .btn-add:hover { background: #c73652; }
+    .btn-add:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .add-msg {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      margin-top: 10px;
+      min-height: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    /* USERS TABLE */
+    .users-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      animation: fadeIn 0.5s 0.2s ease both;
+    }
+
+    .users-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .users-count {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    .btn-refresh {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 2px;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      transition: all 0.2s;
+    }
+
+    .btn-refresh:hover { border-color: var(--accent); color: var(--accent); }
+
+    .users-list { padding: 8px 0; min-height: 100px; }
+
+    .user-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+      animation: fadeIn 0.3s ease both;
+    }
+
+    .user-row:last-child { border-bottom: none; }
+    .user-row:hover { background: var(--surface2); }
+
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 2px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: white;
+      margin-right: 14px;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+
+    .user-info { flex: 1; }
+
+    .user-name {
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      text-transform: capitalize;
+    }
+
+    .user-id {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+
+    .status-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-right: 12px;
+    }
+
+    .status-badge.active {
+      background: rgba(74,222,128,0.1);
+      color: var(--success);
+      border: 1px solid rgba(74,222,128,0.2);
+    }
+
+    .status-badge.inactive {
+      background: rgba(248,113,113,0.1);
+      color: var(--error);
+      border: 1px solid rgba(248,113,113,0.2);
+    }
+
+    .user-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-toggle {
+      padding: 6px 12px;
+      border-radius: 2px;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      border: 1px solid;
+      transition: all 0.2s;
+      text-transform: uppercase;
+    }
+
+    .btn-toggle.activate {
+      background: transparent;
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .btn-toggle.activate:hover {
+      background: rgba(74,222,128,0.1);
+    }
+
+    .btn-toggle.deactivate {
+      background: transparent;
+      border-color: var(--warning);
+      color: var(--warning);
+    }
+
+    .btn-toggle.deactivate:hover {
+      background: rgba(250,204,21,0.1);
+    }
+
+    .btn-delete {
+      padding: 6px 12px;
+      border-radius: 2px;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      border: 1px solid var(--error);
+      background: transparent;
+      color: var(--error);
+      transition: all 0.2s;
+      text-transform: uppercase;
+    }
+
+    .btn-delete:hover { background: rgba(248,113,113,0.1); }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 12px 20px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      z-index: 999;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-left: 3px solid var(--success); color: var(--success); }
+    .toast.error { border-left: 3px solid var(--error); color: var(--error); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">🛡️ OCULT<span>ADOR</span></div>
+    <div class="nav-right">
+      <span class="admin-badge" id="adminEmail">—</span>
+      <button class="btn-logout" onclick="logout()">Salir</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-header">
+      <h1>Gestión de usuarios</h1>
+      <p class="page-sub">Administra acceso al ocultador</p>
+    </div>
+
+    <!-- Agregar usuario -->
+    <div class="add-section">
+      <p class="section-title">Agregar nuevo usuario</p>
+      <div class="add-row">
+        <input type="text" id="newUser" placeholder="nombre de usuario (ej: Boris)" />
+        <button class="btn-add" onclick="agregarUsuario()">+ Agregar</button>
+      </div>
+      <p class="add-msg" id="addMsg"></p>
+    </div>
+
+    <!-- Lista de usuarios -->
+    <div class="users-section">
+      <div class="users-header">
+        <p class="section-title" style="margin:0">Usuarios registrados</p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="users-count" id="usersCount">— usuarios</span>
+          <button class="btn-refresh" onclick="cargarUsuarios()">↻ Actualizar</button>
+        </div>
+      </div>
+      <div class="users-list" id="usersList">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          Cargando usuarios...
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getFirestore, collection, getDocs,
+      doc, setDoc, updateDoc, deleteDoc, getDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCmbktRxMEB4Udn_bmmEqjrgOy1giKaPX0",
+      authDomain: "ocultador-auth.firebaseapp.com",
+      projectId: "ocultador-auth",
+      storageBucket: "ocultador-auth.firebasestorage.app",
+      messagingSenderId: "524437270376",
+      appId: "1:524437270376:web:87f2184e42b26d3b29b0dd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Verificar sesión
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'index.html';
+        return;
+      }
+      const adminDoc = await getDoc(doc(db, 'admins', user.email));
+      if (!adminDoc.exists() || !adminDoc.data().activo) {
+        await signOut(auth);
+        window.location.href = 'index.html';
+        return;
+      }
+      document.getElementById('adminEmail').textContent = user.email;
+      cargarUsuarios();
+    });
+
+    // Cargar usuarios
+    window.cargarUsuarios = async function() {
+      const lista = document.getElementById('usersList');
+      lista.innerHTML = '<div class="loading-state"><div class="spinner"></div>Cargando...</div>';
+
+      try {
+        const snap = await getDocs(collection(db, 'usuarios'));
+        const users = [];
+        snap.forEach(d => users.push({ id: d.id, ...d.data() }));
+
+        document.getElementById('usersCount').textContent = `${users.length} usuario${users.length !== 1 ? 's' : ''}`;
+
+        if (users.length === 0) {
+          lista.innerHTML = '<div class="empty-state">No hay usuarios registrados aún.</div>';
+          return;
+        }
+
+        lista.innerHTML = users.map(u => `
+          <div class="user-row" id="row-${u.id}">
+            <div class="user-avatar">${u.id.charAt(0)}</div>
+            <div class="user-info">
+              <div class="user-name">${u.id}</div>
+              <div class="user-id">ID: ${u.id.toLowerCase()}</div>
+            </div>
+            <span class="status-badge ${u.activo ? 'active' : 'inactive'}">
+              ${u.activo ? '● Activo' : '○ Inactivo'}
+            </span>
+            <div class="user-actions">
+              ${u.activo
+                ? `<button class="btn-toggle deactivate" onclick="toggleUsuario('${u.id}', false)">Desactivar</button>`
+                : `<button class="btn-toggle activate" onclick="toggleUsuario('${u.id}', true)">Activar</button>`
+              }
+              <button class="btn-delete" onclick="eliminarUsuario('${u.id}')">Eliminar</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        lista.innerHTML = '<div class="empty-state">Error al cargar usuarios.</div>';
+      }
+    };
+
+    // Agregar usuario
+    window.agregarUsuario = async function() {
+      const input = document.getElementById('newUser');
+      const nombre = input.value.trim();
+      const msg = document.getElementById('addMsg');
+
+      if (!nombre) {
+        msg.style.color = 'var(--error)';
+        msg.textContent = '⚠ Ingresa un nombre de usuario';
+        return;
+      }
+
+      try {
+        const ref = doc(db, 'usuarios', nombre);
+        const existe = await getDoc(ref);
+        if (existe.exists()) {
+          msg.style.color = 'var(--error)';
+          msg.textContent = '⚠ Este usuario ya existe';
+          return;
+        }
+        await setDoc(ref, { activo: true });
+        input.value = '';
+        msg.style.color = 'var(--success)';
+        msg.textContent = `✓ Usuario "${nombre}" creado correctamente`;
+        showToast(`Usuario "${nombre}" agregado`, 'success');
+        cargarUsuarios();
+        setTimeout(() => msg.textContent = '', 3000);
+      } catch (e) {
+        msg.style.color = 'var(--error)';
+        msg.textContent = '✗ Error al crear usuario';
+      }
+    };
+
+    // Activar / Desactivar
+    window.toggleUsuario = async function(id, estado) {
+      try {
+        await updateDoc(doc(db, 'usuarios', id), { activo: estado });
+        showToast(`"${id}" ${estado ? 'activado' : 'desactivado'}`, 'success');
+        cargarUsuarios();
+      } catch (e) {
+        showToast('Error al actualizar usuario', 'error');
+      }
+    };
+
+    // Eliminar
+    window.eliminarUsuario = async function(id) {
+      if (!confirm(`¿Eliminar al usuario "${id}"? Esta acción no se puede deshacer.`)) return;
+      try {
+        await deleteDoc(doc(db, 'usuarios', id));
+        showToast(`"${id}" eliminado`, 'success');
+        cargarUsuarios();
+      } catch (e) {
+        showToast('Error al eliminar usuario', 'error');
+      }
+    };
+
+    // Logout
+    window.logout = async function() {
+      await signOut(auth);
+      window.location.href = 'index.html';
+    };
+
+    // Toast
+    window.showToast = function(msg, type) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast ${type} show`;
+      setTimeout(() => t.className = 'toast', 3000);
+    };
+
+    // Enter en input
+    document.getElementById('newUser')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') window.agregarUsuario();
+    });
+  </script>
+</body>
+</html>
