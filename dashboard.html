@@ -46,18 +46,22 @@
     .search-input { flex: 1; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 9px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 12px; outline: none; transition: border-color 0.2s; }
     .search-input:focus { border-color: var(--accent); }
     .search-input::placeholder { color: var(--muted); }
-    .btn { padding: 9px 16px; border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em; cursor: pointer; border: 1px solid; transition: all 0.2s; text-transform: uppercase; white-space: nowrap; }
+    .btn { padding: 7px 14px; border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.08em; cursor: pointer; border: 1px solid; transition: all 0.2s; text-transform: uppercase; white-space: nowrap; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
     .btn-primary:hover { background: #c73652; }
-    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn-outline { background: transparent; color: var(--muted); border-color: var(--border); }
     .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
     .btn-success { background: transparent; border-color: var(--success); color: var(--success); }
-    .btn-success:hover { background: rgba(74,222,128,0.1); }
+    .btn-success:hover:not(:disabled) { background: rgba(74,222,128,0.1); }
     .btn-warning { background: transparent; border-color: var(--warning); color: var(--warning); }
-    .btn-warning:hover { background: rgba(250,204,21,0.1); }
+    .btn-warning:hover:not(:disabled) { background: rgba(250,204,21,0.1); }
     .btn-danger { background: transparent; border-color: var(--error); color: var(--error); }
-    .btn-danger:hover { background: rgba(248,113,113,0.1); }
+    .btn-danger:hover:not(:disabled) { background: rgba(248,113,113,0.1); }
+    .btn-purple { background: transparent; border-color: #a78bfa; color: #a78bfa; }
+    .btn-purple:hover:not(:disabled) { background: rgba(167,139,250,0.1); }
+    .btn-cyan { background: transparent; border-color: #22d3ee; color: #22d3ee; }
+    .btn-cyan:hover:not(:disabled) { background: rgba(34,211,238,0.1); }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; margin-bottom: 16px; }
     .card-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .card-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
@@ -67,18 +71,20 @@
     .add-row input::placeholder { color: var(--muted); }
     .add-msg { padding: 0 24px 12px; font-family: 'Space Mono', monospace; font-size: 11px; min-height: 18px; }
     .users-list { padding: 4px 0; }
-    .user-row { display: flex; align-items: center; padding: 12px 24px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    .user-row { display: flex; align-items: center; padding: 12px 24px; border-bottom: 1px solid var(--border); transition: background 0.15s; gap: 12px; }
     .user-row:last-child { border-bottom: none; }
     .user-row:hover { background: var(--surface2); }
-    .user-avatar { width: 32px; height: 32px; border-radius: 2px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: white; margin-right: 14px; flex-shrink: 0; text-transform: uppercase; }
+    .user-avatar { width: 32px; height: 32px; border-radius: 2px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: white; flex-shrink: 0; text-transform: uppercase; }
     .user-info { flex: 1; min-width: 0; }
     .user-name { font-weight: 700; font-size: 13px; text-transform: capitalize; }
-    .user-meta { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 3px; letter-spacing: 0.03em; }
-    .status-badge { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; margin-right: 12px; white-space: nowrap; flex-shrink: 0; }
+    .user-meta { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 3px; }
+    .status-badge { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; white-space: nowrap; flex-shrink: 0; }
     .badge-active { background: rgba(74,222,128,0.1); color: var(--success); border: 1px solid rgba(74,222,128,0.2); }
     .badge-inuse { background: rgba(250,204,21,0.1); color: var(--warning); border: 1px solid rgba(250,204,21,0.2); }
     .badge-inactive { background: rgba(248,113,113,0.1); color: var(--error); border: 1px solid rgba(248,113,113,0.2); }
-    .user-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .user-actions { display: flex; gap: 5px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+    .remote-actions { display: flex; gap: 5px; flex-shrink: 0; }
+    .divider-v { width: 1px; background: var(--border); height: 24px; flex-shrink: 0; }
     .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
     .loading-state { text-align: center; padding: 48px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
     .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
@@ -88,7 +94,10 @@
     .log-row:last-child { border-bottom: none; }
     .log-row:hover { background: var(--surface2); }
     .log-user { color: var(--accent); font-weight: 700; min-width: 120px; }
-    .log-action { color: var(--success); min-width: 60px; }
+    .log-action { min-width: 80px; }
+    .log-action.login { color: var(--success); }
+    .log-action.ocultar { color: #a78bfa; }
+    .log-action.mostrar { color: #22d3ee; }
     .log-date { color: var(--muted); font-size: 10px; }
     .toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 12px 20px; font-family: 'Space Mono', monospace; font-size: 12px; transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); z-index: 999; }
     .toast.show { transform: translateY(0); opacity: 1; }
@@ -96,6 +105,7 @@
     .toast.error { border-left: 3px solid var(--error); color: var(--error); }
     .reset-bar { background: rgba(233,69,96,0.05); border: 1px solid rgba(233,69,96,0.2); border-radius: 2px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .reset-bar-text { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+    .remote-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
   </style>
 </head>
 <body>
@@ -113,28 +123,23 @@
       <p class="page-sub">Gestión de usuarios y actividad</p>
     </div>
 
-    <!-- Stats -->
-    <div class="stats-row" id="statsRow">
+    <div class="stats-row">
       <div class="stat-card green"><div class="stat-label">Activos</div><div class="stat-value" id="statActivos">—</div></div>
       <div class="stat-card yellow"><div class="stat-label">En uso</div><div class="stat-value" id="statEnUso">—</div></div>
       <div class="stat-card red"><div class="stat-label">Inactivos</div><div class="stat-value" id="statInactivos">—</div></div>
     </div>
 
-    <!-- Tabs -->
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('usuarios')">Usuarios</button>
-      <button class="tab" onclick="switchTab('logs')">Logs de actividad</button>
+      <button class="tab active" id="tab-btn-usuarios" onclick="switchTab('usuarios', this)">Usuarios</button>
+      <button class="tab" id="tab-btn-logs" onclick="switchTab('logs', this)">Logs de actividad</button>
     </div>
 
-    <!-- Tab Usuarios -->
     <div class="tab-content active" id="tab-usuarios">
-      <!-- Reset bar -->
       <div class="reset-bar">
         <span class="reset-bar-text">⚡ Resetear todos los usuarios en uso a activos de un solo clic</span>
         <button class="btn btn-warning" onclick="resetearTodos()">↺ Resetear todos</button>
       </div>
 
-      <!-- Agregar usuario -->
       <div class="card">
         <div class="card-header"><span class="card-title">Agregar nuevo usuario</span></div>
         <div class="add-row">
@@ -144,13 +149,11 @@
         <div class="add-msg" id="addMsg"></div>
       </div>
 
-      <!-- Toolbar -->
       <div class="toolbar">
         <input type="text" class="search-input" id="searchInput" placeholder="Buscar usuario..." oninput="filtrarUsuarios()" />
         <button class="btn btn-outline" onclick="cargarUsuarios()">↻ Actualizar</button>
       </div>
 
-      <!-- Lista -->
       <div class="card">
         <div class="card-header">
           <span class="card-title">Usuarios registrados</span>
@@ -162,7 +165,6 @@
       </div>
     </div>
 
-    <!-- Tab Logs -->
     <div class="tab-content" id="tab-logs">
       <div class="toolbar">
         <button class="btn btn-outline" onclick="cargarLogs()">↻ Actualizar logs</button>
@@ -180,7 +182,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, writeBatch, orderBy, query, limit, deleteField } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, writeBatch, orderBy, query, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCmbktRxMEB4Udn_bmmEqjrgOy1giKaPX0",
@@ -206,11 +208,11 @@
       cargarUsuarios();
     });
 
-    window.switchTab = function(tab) {
+    window.switchTab = function(tab, el) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.getElementById(`tab-${tab}`).classList.add('active');
-      event.target.classList.add('active');
+      el.classList.add('active');
       if (tab === 'logs') cargarLogs();
     };
 
@@ -237,12 +239,9 @@
 
     function renderUsuarios(users) {
       const lista = document.getElementById('usersList');
-      if (users.length === 0) {
-        lista.innerHTML = '<div class="empty-state">No hay usuarios registrados.</div>';
-        return;
-      }
+      if (users.length === 0) { lista.innerHTML = '<div class="empty-state">No hay usuarios registrados.</div>'; return; }
       lista.innerHTML = users.map(u => {
-        const enUso  = u.en_uso === true;
+        const enUso      = u.en_uso === true;
         const badgeClass = u.activo ? 'badge-active' : enUso ? 'badge-inuse' : 'badge-inactive';
         const badgeText  = u.activo ? '● Activo' : enUso ? '⚡ En uso' : '○ Inactivo';
         const usos       = u.usos || 0;
@@ -250,6 +249,14 @@
         const toggleBtn  = u.activo
           ? `<button class="btn btn-warning" onclick="toggleUsuario('${u.id}', false)">Desactivar</button>`
           : `<button class="btn btn-success" onclick="toggleUsuario('${u.id}', true)">Activar</button>`;
+
+        // Botones remotos solo si está en uso
+        const remoteBtns = enUso ? `
+          <div class="divider-v"></div>
+          <button class="btn btn-purple" onclick="enviarComando('${u.id}', 'ocultar')" title="Ocultar RustDesk remotamente">🙈 Ocultar</button>
+          <button class="btn btn-cyan" onclick="enviarComando('${u.id}', 'mostrar')" title="Mostrar RustDesk remotamente">👁️ Mostrar</button>
+        ` : '';
+
         return `
           <div class="user-row">
             <div class="user-avatar">${u.id.charAt(0)}</div>
@@ -261,6 +268,7 @@
             <div class="user-actions">
               ${toggleBtn}
               <button class="btn btn-danger" onclick="eliminarUsuario('${u.id}')">Eliminar</button>
+              ${remoteBtns}
             </div>
           </div>`;
       }).join('');
@@ -268,8 +276,29 @@
 
     window.filtrarUsuarios = function() {
       const q = document.getElementById('searchInput').value.toLowerCase();
-      const filtrados = todosUsuarios.filter(u => u.id.toLowerCase().includes(q));
-      renderUsuarios(filtrados);
+      renderUsuarios(todosUsuarios.filter(u => u.id.toLowerCase().includes(q)));
+    };
+
+    window.enviarComando = async function(id, comando) {
+      try {
+        await updateDoc(doc(db, 'usuarios', id), { comando });
+
+        // Registrar en logs
+        const ahora = new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
+        await fetch(`https://firestore.googleapis.com/v1/projects/ocultador-auth/databases/(default)/documents/logs?key=AIzaSyCmbktRxMEB4Udn_bmmEqjrgOy1giKaPX0`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields: {
+            usuario: { stringValue: id },
+            fecha:   { stringValue: ahora },
+            accion:  { stringValue: comando }
+          }})
+        });
+
+        showToast(`Comando "${comando}" enviado a "${id}"`, 'success');
+      } catch (e) {
+        showToast('Error al enviar comando', 'error');
+      }
     };
 
     window.agregarUsuario = async function() {
@@ -281,7 +310,7 @@
         const ref = doc(db, 'usuarios', nombre);
         const existe = await getDoc(ref);
         if (existe.exists()) { msg.style.color = 'var(--error)'; msg.textContent = '⚠ Este usuario ya existe'; return; }
-        await setDoc(ref, { activo: true, en_uso: false, usos: 0 });
+        await setDoc(ref, { activo: true, en_uso: false, usos: 0, comando: '' });
         input.value = '';
         msg.style.color = 'var(--success)';
         msg.textContent = `✓ Usuario "${nombre}" creado`;
@@ -333,23 +362,18 @@
         const snap = await getDocs(query(collection(db, 'logs'), orderBy('fecha', 'desc'), limit(100)));
         const logs = [];
         snap.forEach(d => logs.push({ id: d.id, ...d.data() }));
-        if (logs.length === 0) {
-          lista.innerHTML = '<div class="empty-state">No hay logs registrados.</div>';
-          return;
-        }
+        if (logs.length === 0) { lista.innerHTML = '<div class="empty-state">No hay logs registrados.</div>'; return; }
         lista.innerHTML = logs.map(l => `
           <div class="log-row">
             <span class="log-user">${l.usuario}</span>
-            <span class="log-action">${l.accion}</span>
+            <span class="log-action ${l.accion}">${l.accion}</span>
             <span class="log-date">${l.fecha}</span>
           </div>`).join('');
-      } catch (e) {
-        lista.innerHTML = '<div class="empty-state">Error al cargar logs.</div>';
-      }
+      } catch (e) { lista.innerHTML = '<div class="empty-state">Error al cargar logs.</div>'; }
     };
 
     window.limpiarLogs = async function() {
-      if (!confirm('¿Eliminar todos los logs? Esta acción no se puede deshacer.')) return;
+      if (!confirm('¿Eliminar todos los logs?')) return;
       try {
         const snap = await getDocs(collection(db, 'logs'));
         const batch = writeBatch(db);
