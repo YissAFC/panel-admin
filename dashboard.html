@@ -12,7 +12,7 @@
       --border: #1e1e2e; --accent: #e94560; --text: #e8e8f0;
       --muted: #555570; --success: #4ade80; --warning: #facc15; --error: #f87171;
     }
-    body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
     body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(233,69,96,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(233,69,96,0.02) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
     nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 32px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
     .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; letter-spacing: 0.05em; text-transform: uppercase; }
@@ -22,7 +22,7 @@
     .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
     .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
     .tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
-    .tab { background: transparent; border: none; color: var(--muted); padding: 10px 20px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; }
+    .tab { background: transparent; border: none; color: var(--muted); padding: 10px 20px; font-family: 'Segoe UI', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; }
     .tab:hover { color: var(--text); }
     .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
     .tab-content { display: none; }
@@ -350,7 +350,7 @@
               <div class="user-actions">
                 ${toggleBtn}
                 <button class="btn btn-nota" onclick="abrirModal('${u.id}', \`${nota.replace(/`/g, "'")}\`)">${nota ? '📝 Nota' : '📝 Añadir nota'}</button>
-                <button class="btn btn-danger" onclick="eliminarUsuario('${u.id}')">Eliminar</button>
+                ${!enUso ? `<button class="btn btn-danger" onclick="eliminarUsuario('${u.id}')">Eliminar</button>` : ''}
                 ${remoteBtns}
               </div>
             </div>
@@ -504,13 +504,12 @@
     window.toggleUsuario = async function(id, estado) {
       try {
         const updateData = { activo: estado };
-        if (estado) updateData.en_uso = false;
+        if (estado) { updateData.en_uso = false; updateData.nota = ''; }
         await updateDoc(doc(db, 'usuarios', id), updateData);
         showToast(`"${id}" ${estado ? 'activado' : 'desactivado'}`, 'success');
         cargarUsuarios();
       } catch (e) { showToast('Error al actualizar', 'error'); }
     };
-
     window.eliminarUsuario = async function(id) {
       if (!confirm(`¿Eliminar al usuario "${id}"?`)) return;
       try {
