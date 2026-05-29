@@ -203,6 +203,16 @@
     <!-- Tab Logs -->
     <div class="tab-content" id="tab-logs">
       <div class="toolbar">
+        <div class="toolbar">
+      <input type="text" class="search-input" id="searchInput" placeholder="Buscar usuario..." oninput="filtrarUsuarios()" />
+      <select id="sortSelect" onchange="ordenarUsuarios()" style="background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:9px 14px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;outline:none;cursor:pointer;">
+        <option value="nombre">Nombre</option>
+        <option value="usos">Más usos</option>
+        <option value="ultimo_uso">Último uso</option>
+        <option value="estado">Estado</option>
+      </select>
+      <button class="btn btn-outline" onclick="cargarUsuarios()">↻ Actualizar</button>
+</div>
         <button class="btn btn-outline" onclick="cargarLogs()">↻ Actualizar logs</button>
         <button class="btn btn-danger" onclick="limpiarLogs()">🗑 Limpiar logs</button>
       </div>
@@ -575,6 +585,23 @@
     document.getElementById('newUser')?.addEventListener('keydown', e => {
       if (e.key === 'Enter') window.agregarUsuario();
     });
+
+    window.ordenarUsuarios = function() {
+      const criterio = document.getElementById('sortSelect').value;
+      const sorted = [...todosUsuarios].sort((a, b) => {
+        if (criterio === 'nombre')     return a.id.localeCompare(b.id);
+        if (criterio === 'usos')       return (b.usos || 0) - (a.usos || 0);
+        if (criterio === 'ultimo_uso') return (b.ultimo_uso || '').localeCompare(a.ultimo_uso || '');
+        if (criterio === 'estado') {
+          const orden = { true: 0, en_uso: 1, false: 2 };
+          const ea = a.en_uso ? 'en_uso' : String(a.activo);
+          const eb = b.en_uso ? 'en_uso' : String(b.activo);
+          return (orden[ea] ?? 3) - (orden[eb] ?? 3);
+        }
+        return 0;
+      });
+      renderUsuarios(sorted);
+    };
   </script>
 </body>
 </html>
