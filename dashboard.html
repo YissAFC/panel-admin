@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -7,62 +7,86 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
+
+    /* ── Temas ── */
+    [data-theme="dark"] {
       --bg: #0a0a0f; --surface: #12121a; --surface2: #1a1a25;
       --border: #1e1e2e; --accent: #e94560; --text: #e8e8f0;
       --muted: #555570; --success: #4ade80; --warning: #facc15; --error: #f87171;
+      --grid-color: rgba(233,69,96,0.02);
     }
-    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
-    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(233,69,96,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(233,69,96,0.02) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+    [data-theme="light"] {
+      --bg: #f4f4f8; --surface: #ffffff; --surface2: #f0f0f5;
+      --border: #dddde8; --accent: #e94560; --text: #1a1a2e;
+      --muted: #888899; --success: #16a34a; --warning: #d97706; --error: #dc2626;
+      --grid-color: rgba(233,69,96,0.03);
+    }
 
-    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 32px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-    .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; letter-spacing: 0.05em; text-transform: uppercase; font-family: 'Segoe UI', sans-serif; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+
+    /* ── Nav ── */
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; transition: background 0.3s; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; letter-spacing: 0.05em; text-transform: uppercase; }
     .nav-logo span { color: var(--accent); }
-    .nav-right { display: flex; align-items: center; gap: 16px; }
-    .admin-badge { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
-    .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .admin-badge { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; display: none; }
+    @media(min-width: 600px) { .admin-badge { display: block; } }
+    .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 10px; cursor: pointer; text-transform: uppercase; transition: all 0.2s; white-space: nowrap; }
     .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .theme-btn { font-size: 16px; padding: 6px 10px; border: 1px solid var(--border); background: transparent; border-radius: 2px; cursor: pointer; transition: all 0.2s; }
+    .theme-btn:hover { border-color: var(--accent); }
 
-    .tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
-    .tab { background: transparent; border: none; color: var(--muted); padding: 10px 20px; font-family: 'Segoe UI', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; }
+    /* ── Tabs ── */
+    .tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+    .tab { background: transparent; border: none; color: var(--muted); padding: 10px 16px; font-family: 'Segoe UI', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
     .tab:hover { color: var(--text); }
     .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    main { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
-    .page-header { margin-bottom: 28px; }
-    h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; }
-    .page-sub { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+    /* ── Main ── */
+    main { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+    @media(min-width: 600px) { main { padding: 40px 24px; } }
+    .page-header { margin-bottom: 24px; }
+    h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; }
+    @media(min-width: 600px) { h1 { font-size: 28px; } }
+    .page-sub { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
 
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 18px 20px; position: relative; overflow: hidden; }
+    /* ── Stats ── */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 14px 16px; position: relative; overflow: hidden; transition: background 0.3s; }
     .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
     .stat-card.green::before { background: var(--success); }
     .stat-card.yellow::before { background: var(--warning); }
     .stat-card.red::before { background: var(--error); }
-    .stat-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
-    .stat-value { font-size: 28px; font-weight: 800; }
+    .stat-label { font-family: 'Space Mono', monospace; font-size: 8px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
+    .stat-value { font-size: 24px; font-weight: 800; }
+    @media(min-width: 600px) { .stat-value { font-size: 28px; } }
     .stat-card.green .stat-value { color: var(--success); }
     .stat-card.yellow .stat-value { color: var(--warning); }
     .stat-card.red .stat-value { color: var(--error); }
 
-    /* Barra superior de usuarios */
-    .users-topbar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-    .users-topbar-left { flex: 1; display: flex; gap: 8px; align-items: center; }
-    .users-topbar-right { display: flex; gap: 8px; align-items: center; }
-    .search-input { width: 220px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 8px 12px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 11px; outline: none; transition: border-color 0.2s; }
-    .search-input:focus { border-color: var(--accent); }
-    .search-input::placeholder { color: var(--muted); }
-    .add-input { width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 8px 12px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 11px; outline: none; transition: border-color 0.2s; }
-    .add-input:focus { border-color: var(--accent); }
-    .add-input::placeholder { color: var(--muted); }
-    #sortSelect { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 8px 12px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 11px; outline: none; cursor: pointer; transition: border-color 0.2s; }
-    #sortSelect:hover { border-color: var(--accent); }
+    /* ── Topbar usuarios ── */
+    .users-topbar { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    @media(min-width: 700px) { .users-topbar { flex-direction: row; align-items: center; } }
+    .users-topbar-left { display: flex; gap: 8px; align-items: center; flex: 1; flex-wrap: wrap; }
+    .users-topbar-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .search-input, .add-input, #sortSelect {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 2px;
+      padding: 8px 12px; color: var(--text); font-family: 'Space Mono', monospace;
+      font-size: 11px; outline: none; transition: border-color 0.2s, background 0.3s;
+    }
+    .search-input { flex: 1; min-width: 140px; }
+    .add-input { flex: 1; min-width: 140px; }
+    .search-input:focus, .add-input:focus, #sortSelect:focus { border-color: var(--accent); }
+    .search-input::placeholder, .add-input::placeholder { color: var(--muted); }
+    #sortSelect { cursor: pointer; }
     #sortSelect option { background: var(--surface); color: var(--text); }
     .add-msg { font-family: 'Space Mono', monospace; font-size: 11px; min-height: 16px; margin-bottom: 8px; }
 
-    .btn { padding: 7px 14px; border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.08em; cursor: pointer; border: 1px solid; transition: all 0.2s; text-transform: uppercase; white-space: nowrap; }
+    /* ── Buttons ── */
+    .btn { padding: 7px 12px; border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.05em; cursor: pointer; border: 1px solid; transition: all 0.2s; text-transform: uppercase; white-space: nowrap; }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
     .btn-primary:hover { background: #c73652; }
@@ -81,21 +105,24 @@
     .btn-nota { background: rgba(137,180,250,0.1); border-color: #89b4fa; color: #89b4fa; }
     .btn-nota:hover { background: rgba(137,180,250,0.2); }
 
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; margin-bottom: 16px; }
-    .card-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    /* ── Card ── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; margin-bottom: 16px; transition: background 0.3s; }
+    .card-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .card-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
 
+    /* ── User rows ── */
     .users-list { padding: 4px 0; }
-    .user-row { padding: 14px 24px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    .user-row { padding: 12px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    @media(min-width: 600px) { .user-row { padding: 14px 24px; } }
     .user-row:last-child { border-bottom: none; }
     .user-row:hover { background: var(--surface2); }
-    .user-top { display: flex; align-items: center; gap: 12px; }
-    .user-avatar { width: 32px; height: 32px; border-radius: 2px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: white; flex-shrink: 0; text-transform: uppercase; }
-    .user-main { flex: 1; min-width: 0; }
+    .user-top { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+    .user-avatar { width: 32px; height: 32px; border-radius: 2px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: white; flex-shrink: 0; }
+    .user-main { flex: 1; min-width: 100px; }
     .user-name { font-weight: 700; font-size: 14px; }
     .user-note { font-family: 'Space Mono', monospace; font-size: 11px; color: #89b4fa; margin-top: 2px; font-weight: 700; }
-    .user-bottom { display: flex; align-items: center; gap: 16px; margin-top: 8px; padding-left: 44px; flex-wrap: wrap; }
-    .user-meta-item { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+    .user-bottom { display: flex; align-items: center; gap: 12px; margin-top: 8px; padding-left: 42px; flex-wrap: wrap; }
+    .user-meta-item { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
     .user-meta-item span { color: var(--text); opacity: 0.7; }
     .timer-badge { font-family: 'Space Mono', monospace; font-size: 10px; padding: 3px 8px; border-radius: 2px; background: rgba(250,204,21,0.08); color: var(--warning); border: 1px solid rgba(250,204,21,0.15); }
     .timer-badge.urgent { background: rgba(248,113,113,0.08); color: var(--error); border-color: rgba(248,113,113,0.15); }
@@ -103,48 +130,54 @@
     .badge-active { background: rgba(74,222,128,0.1); color: var(--success); border: 1px solid rgba(74,222,128,0.2); }
     .badge-inuse { background: rgba(250,204,21,0.1); color: var(--warning); border: 1px solid rgba(250,204,21,0.2); }
     .badge-inactive { background: rgba(248,113,113,0.1); color: var(--error); border: 1px solid rgba(248,113,113,0.2); }
-    .user-actions { display: flex; gap: 5px; flex-shrink: 0; flex-wrap: wrap; }
+    .user-actions { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; width: 100%; }
+    @media(min-width: 700px) { .user-actions { width: auto; margin-top: 0; } }
 
-    /* Modal */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    /* ── Reset bar ── */
+    .reset-bar { background: rgba(233,69,96,0.05); border: 1px solid rgba(233,69,96,0.2); border-radius: 2px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+    .reset-bar-text { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
+
+    /* ── Modal ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 16px; }
     .modal-overlay.show { opacity: 1; pointer-events: all; }
-    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 28px; width: 100%; max-width: 400px; position: relative; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 24px; width: 100%; max-width: 400px; position: relative; transition: background 0.3s; }
     .modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), transparent); }
     .modal h3 { font-size: 16px; font-weight: 800; margin-bottom: 16px; }
-    .modal textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 2px; padding: 10px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 12px; outline: none; resize: vertical; min-height: 80px; transition: border-color 0.2s; }
+    .modal textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 2px; padding: 10px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 12px; outline: none; resize: vertical; min-height: 80px; transition: border-color 0.2s, background 0.3s; }
     .modal textarea:focus { border-color: var(--accent); }
     .modal-actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
 
-    /* Gráfico */
-    .chart-container { padding: 24px; }
-    .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 140px; margin-bottom: 8px; }
+    /* ── Gráfico ── */
+    .chart-container { padding: 20px; overflow-x: auto; }
+    .chart-inner { min-width: 400px; }
+    .chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 120px; margin-bottom: 6px; }
     .chart-bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
     .chart-bar { width: 100%; background: var(--accent); border-radius: 2px 2px 0 0; min-height: 2px; transition: height 0.5s cubic-bezier(0.16,1,0.3,1); opacity: 0.8; }
     .chart-bar:hover { opacity: 1; }
-    .chart-bar-val { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); margin-bottom: 4px; }
-    .chart-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 6px; text-align: center; }
+    .chart-bar-val { font-family: 'Space Mono', monospace; font-size: 8px; color: var(--muted); margin-bottom: 3px; }
     .chart-empty { text-align: center; padding: 40px; font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); }
 
-    .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
-    .loading-state { text-align: center; padding: 48px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
-    .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .log-row { display: flex; align-items: center; padding: 10px 24px; border-bottom: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 11px; gap: 16px; }
+    /* ── Logs ── */
+    .log-row { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 10px; gap: 10px; flex-wrap: wrap; }
+    @media(min-width: 600px) { .log-row { font-size: 11px; padding: 10px 24px; gap: 16px; flex-wrap: nowrap; } }
     .log-row:last-child { border-bottom: none; }
     .log-row:hover { background: var(--surface2); }
-    .log-user { color: var(--accent); font-weight: 700; min-width: 120px; }
-    .log-action { min-width: 80px; }
+    .log-user { color: var(--accent); font-weight: 700; min-width: 100px; }
+    .log-action { min-width: 70px; }
     .log-action.login { color: var(--success); }
     .log-action.ocultar { color: #a78bfa; }
     .log-action.mostrar { color: #22d3ee; }
     .log-action.cerrar { color: var(--error); }
     .log-date { color: var(--muted); font-size: 10px; }
 
-    .reset-bar { background: rgba(233,69,96,0.05); border: 1px solid rgba(233,69,96,0.2); border-radius: 2px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .reset-bar-text { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+    /* ── Estados ── */
+    .empty-state, .loading-state { text-align: center; padding: 40px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
+    .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 12px 20px; font-family: 'Space Mono', monospace; font-size: 12px; transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); z-index: 999; }
+    /* ── Toast ── */
+    .toast { position: fixed; bottom: 16px; right: 16px; left: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 12px 20px; font-family: 'Space Mono', monospace; font-size: 12px; transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); z-index: 999; text-align: center; }
+    @media(min-width: 500px) { .toast { left: auto; width: auto; max-width: 360px; text-align: left; } }
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.success { border-left: 3px solid var(--success); color: var(--success); }
     .toast.error { border-left: 3px solid var(--error); color: var(--error); }
@@ -155,6 +188,7 @@
     <div class="nav-logo">🛡️ OCULT<span>ADOR</span></div>
     <div class="nav-right">
       <span class="admin-badge" id="adminEmail">—</span>
+      <button class="theme-btn" id="themeBtn" onclick="toggleTema()" title="Cambiar tema">🌙</button>
       <button class="nav-btn" onclick="logout()">Salir</button>
     </div>
   </nav>
@@ -173,21 +207,19 @@
 
     <div class="tabs">
       <button class="tab active" onclick="switchTab('usuarios', this)">Usuarios</button>
-      <button class="tab" onclick="switchTab('grafico', this)">Gráfico de usos</button>
-      <button class="tab" onclick="switchTab('logs', this)">Logs de actividad</button>
+      <button class="tab" onclick="switchTab('grafico', this)">Gráfico</button>
+      <button class="tab" onclick="switchTab('logs', this)">Logs</button>
     </div>
 
     <!-- Tab Usuarios -->
     <div class="tab-content active" id="tab-usuarios">
       <div class="reset-bar">
-        <span class="reset-bar-text">⚡ Resetear todos los usuarios en uso a activos de un solo clic</span>
+        <span class="reset-bar-text">⚡ Resetear todos los usuarios en uso</span>
         <button class="btn btn-warning" onclick="resetearTodos()">↺ Resetear todos</button>
       </div>
-
-      <!-- Barra superior compacta -->
       <div class="users-topbar">
         <div class="users-topbar-left">
-          <input type="text" class="search-input" id="searchInput" placeholder="🔍 Buscar usuario..." oninput="filtrarUsuarios()" />
+          <input type="text" class="search-input" id="searchInput" placeholder="🔍 Buscar..." oninput="filtrarUsuarios()" />
           <select id="sortSelect" onchange="ordenarUsuarios()">
             <option value="nombre">A→Z</option>
             <option value="usos">Más usos</option>
@@ -202,7 +234,6 @@
         </div>
       </div>
       <div class="add-msg" id="addMsg"></div>
-
       <div class="card">
         <div class="card-header">
           <span class="card-title">Usuarios registrados</span>
@@ -219,23 +250,23 @@
       <div class="card">
         <div class="card-header">
           <span class="card-title">Usos por día (últimos 14 días)</span>
-          <button class="btn btn-outline" onclick="cargarGrafico()">↻ Actualizar</button>
+          <button class="btn btn-outline" onclick="cargarGrafico()">↻</button>
         </div>
         <div class="chart-container" id="chartContainer">
-          <div class="loading-state"><div class="spinner"></div>Cargando datos...</div>
+          <div class="loading-state"><div class="spinner"></div>Cargando...</div>
         </div>
       </div>
     </div>
 
     <!-- Tab Logs -->
     <div class="tab-content" id="tab-logs">
-      <div style="display:flex;gap:10px;margin-bottom:16px;">
-        <button class="btn btn-outline" onclick="cargarLogs()">↻ Actualizar logs</button>
-        <button class="btn btn-danger" onclick="limpiarLogs()">🗑 Limpiar logs</button>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="cargarLogs()">↻ Actualizar</button>
+        <button class="btn btn-danger" onclick="limpiarLogs()">🗑 Limpiar</button>
       </div>
       <div class="card">
         <div class="card-header"><span class="card-title">Actividad reciente</span></div>
-        <div id="logsList"><div class="loading-state"><div class="spinner"></div>Cargando logs...</div></div>
+        <div id="logsList"><div class="loading-state"><div class="spinner"></div>Cargando...</div></div>
       </div>
     </div>
   </main>
@@ -274,6 +305,20 @@
     const db = getFirestore(app);
     let todosUsuarios = [];
 
+    // ── Tema ──────────────────────────────────────────────────────────────
+    const temaGuardado = localStorage.getItem('tema') || 'dark';
+    document.documentElement.setAttribute('data-theme', temaGuardado);
+    document.getElementById('themeBtn').textContent = temaGuardado === 'dark' ? '☀️' : '🌙';
+
+    window.toggleTema = function() {
+      const actual = document.documentElement.getAttribute('data-theme');
+      const nuevo  = actual === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nuevo);
+      document.getElementById('themeBtn').textContent = nuevo === 'dark' ? '☀️' : '🌙';
+      localStorage.setItem('tema', nuevo);
+    };
+
+    // ── Auth ──────────────────────────────────────────────────────────────
     onAuthStateChanged(auth, async (user) => {
       if (!user) { window.location.href = 'index.html'; return; }
       const adminDoc = await getDoc(doc(db, 'admins', user.email));
@@ -325,9 +370,7 @@
         snap.forEach(d => todosUsuarios.push({ id: d.id, ...d.data() }));
         actualizarStats(todosUsuarios);
         renderUsuarios(todosUsuarios);
-      } catch (e) {
-        lista.innerHTML = '<div class="empty-state">Error al cargar usuarios.</div>';
-      }
+      } catch (e) { lista.innerHTML = '<div class="empty-state">Error al cargar usuarios.</div>'; }
     };
 
     function actualizarStats(users) {
@@ -349,25 +392,17 @@
         const tiempoRest = enUso ? calcularTiempoRestante(u.ultimo_uso) : null;
         const urgente    = tiempoRest && tiempoRest.startsWith('0h');
         const nota       = u.nota || '';
-
-        const toggleBtn = u.activo
+        const toggleBtn  = u.activo
           ? `<button class="btn btn-warning" onclick="toggleUsuario('${u.id}', false)">Desactivar</button>`
           : `<button class="btn btn-success" onclick="toggleUsuario('${u.id}', true)">Activar</button>`;
-
         const remoteBtns = enUso ? `
           <button class="btn btn-purple" onclick="enviarComando('${u.id}', 'ocultar')">🙈 Ocultar</button>
           <button class="btn btn-cyan" onclick="enviarComando('${u.id}', 'mostrar')">👁️ Mostrar</button>
-          <button class="btn btn-danger" onclick="confirmarCerrar('${u.id}')">⏹ Cerrar</button>
-        ` : '';
-
+          <button class="btn btn-danger" onclick="confirmarCerrar('${u.id}')">⏹ Cerrar</button>` : '';
         const eliminarBtn = !enUso
           ? `<button class="btn btn-danger" onclick="eliminarUsuario('${u.id}')">Eliminar</button>` : '';
-
-        const timerHtml = tiempoRest ? `
-          <div class="user-meta-item">
-            <span class="timer-badge ${urgente ? 'urgent' : ''}">⏱ ${tiempoRest}</span>
-          </div>` : '';
-
+        const timerHtml = tiempoRest
+          ? `<div class="user-meta-item"><span class="timer-badge ${urgente ? 'urgent' : ''}">⏱ ${tiempoRest}</span></div>` : '';
         return `
           <div class="user-row">
             <div class="user-top">
@@ -420,25 +455,17 @@
       document.getElementById('modalNota').value = nota;
       document.getElementById('modalOverlay').classList.add('show');
     };
-
-    window.cerrarModal = function() {
-      document.getElementById('modalOverlay').classList.remove('show');
-    };
-
+    window.cerrarModal = function() { document.getElementById('modalOverlay').classList.remove('show'); };
     window.guardarNota = async function() {
       const id   = document.getElementById('modalUserId').value;
       const nota = document.getElementById('modalNota').value.trim();
       try {
         await updateDoc(doc(db, 'usuarios', id), { nota });
         showToast('Nota guardada ✓', 'success');
-        cerrarModal();
-        cargarUsuarios();
+        cerrarModal(); cargarUsuarios();
       } catch (e) { showToast('Error al guardar nota', 'error'); }
     };
-
-    document.getElementById('modalOverlay').addEventListener('click', function(e) {
-      if (e.target === this) cerrarModal();
-    });
+    document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) cerrarModal(); });
 
     window.enviarComando = async function(id, comando) {
       try {
@@ -446,16 +473,11 @@
         const ahora = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima', hour12: false });
         await fetch(`https://firestore.googleapis.com/v1/projects/ocultador-auth/databases/(default)/documents/logs?key=AIzaSyCmbktRxMEB4Udn_bmmEqjrgOy1giKaPX0`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields: {
-            usuario: { stringValue: id },
-            fecha:   { stringValue: ahora },
-            accion:  { stringValue: comando }
-          }})
+          body: JSON.stringify({ fields: { usuario: { stringValue: id }, fecha: { stringValue: ahora }, accion: { stringValue: comando } }})
         });
         showToast(`Comando "${comando}" enviado a "${id}"`, 'success');
       } catch (e) { showToast('Error al enviar comando', 'error'); }
     };
-
     window.confirmarCerrar = function(id) {
       if (!confirm(`¿Cerrar el .exe de "${id}" remotamente?`)) return;
       window.enviarComando(id, 'cerrar');
@@ -504,11 +526,7 @@
       try {
         const snap = await getDocs(collection(db, 'usuarios'));
         const batch = writeBatch(db);
-        snap.forEach(d => {
-          if (d.data().en_uso || !d.data().activo) {
-            batch.update(doc(db, 'usuarios', d.id), { activo: true, en_uso: false });
-          }
-        });
+        snap.forEach(d => { if (d.data().en_uso || !d.data().activo) batch.update(doc(db, 'usuarios', d.id), { activo: true, en_uso: false }); });
         await batch.commit();
         showToast('Todos los usuarios reseteados ✓', 'success');
         cargarUsuarios();
@@ -517,33 +535,29 @@
 
     window.cargarGrafico = async function() {
       const container = document.getElementById('chartContainer');
-      container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Cargando datos...</div>';
+      container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Cargando...</div>';
       try {
         const snap = await getDocs(query(collection(db, 'logs'), orderBy('fecha', 'desc'), limit(500)));
         const conteo = {};
         for (let i = 13; i >= 0; i--) {
-          const d = new Date();
-          d.setDate(d.getDate() - i);
+          const d = new Date(); d.setDate(d.getDate() - i);
           const key = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
           conteo[key] = 0;
         }
         snap.forEach(d => {
           const fecha = d.data().fecha || '';
-          const matchPET = fecha.match(/(\d{4})-(\d{2})-(\d{2})/);
-          const matchFmt = fecha.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+          const m1 = fecha.match(/(\d{4})-(\d{2})-(\d{2})/);
+          const m2 = fecha.match(/(\d{2})\/(\d{2})\/(\d{4})/);
           let key = null;
-          if (matchPET) key = `${matchPET[3]}/${matchPET[2]}`;
-          else if (matchFmt) key = `${matchFmt[1]}/${matchFmt[2]}`;
+          if (m1) key = `${m1[3]}/${m1[2]}`;
+          else if (m2) key = `${m2[1]}/${m2[2]}`;
           if (key && conteo.hasOwnProperty(key)) conteo[key]++;
         });
         const dias = Object.keys(conteo);
         const vals = Object.values(conteo);
         const maxVal = Math.max(...vals, 1);
-        if (vals.every(v => v === 0)) {
-          container.innerHTML = '<div class="chart-empty">No hay datos de uso en los últimos 14 días.</div>';
-          return;
-        }
-        container.innerHTML = `<div class="chart-bars" id="chartBars"></div><div style="display:flex;gap:6px" id="chartLabels"></div>`;
+        if (vals.every(v => v === 0)) { container.innerHTML = '<div class="chart-empty">No hay datos en los últimos 14 días.</div>'; return; }
+        container.innerHTML = `<div class="chart-inner"><div class="chart-bars" id="chartBars"></div><div style="display:flex;gap:4px" id="chartLabels"></div></div>`;
         const barsEl = document.getElementById('chartBars');
         const labelsEl = document.getElementById('chartLabels');
         dias.forEach((dia, i) => {
@@ -553,18 +567,16 @@
           wrap.innerHTML = `<div class="chart-bar-val">${vals[i] > 0 ? vals[i] : ''}</div><div class="chart-bar" style="height:${pct}%" title="${dia}: ${vals[i]} usos"></div>`;
           barsEl.appendChild(wrap);
           const lbl = document.createElement('div');
-          lbl.style.cssText = 'flex:1;font-family:Space Mono,monospace;font-size:9px;color:var(--muted);text-align:center;';
+          lbl.style.cssText = 'flex:1;font-family:Space Mono,monospace;font-size:8px;color:var(--muted);text-align:center;';
           lbl.textContent = dia;
           labelsEl.appendChild(lbl);
         });
-      } catch (e) {
-        container.innerHTML = '<div class="chart-empty">Error al cargar el gráfico.</div>';
-      }
+      } catch (e) { container.innerHTML = '<div class="chart-empty">Error al cargar el gráfico.</div>'; }
     };
 
     window.cargarLogs = async function() {
       const lista = document.getElementById('logsList');
-      lista.innerHTML = '<div class="loading-state"><div class="spinner"></div>Cargando logs...</div>';
+      lista.innerHTML = '<div class="loading-state"><div class="spinner"></div>Cargando...</div>';
       try {
         const snap = await getDocs(query(collection(db, 'logs'), orderBy('fecha', 'desc'), limit(100)));
         const logs = [];
@@ -599,9 +611,7 @@
       setTimeout(() => t.className = 'toast', 3000);
     };
 
-    document.getElementById('newUser')?.addEventListener('keydown', e => {
-      if (e.key === 'Enter') window.agregarUsuario();
-    });
+    document.getElementById('newUser')?.addEventListener('keydown', e => { if (e.key === 'Enter') window.agregarUsuario(); });
   </script>
 </body>
 </html>
