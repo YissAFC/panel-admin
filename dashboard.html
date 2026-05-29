@@ -71,20 +71,26 @@
     .add-row input::placeholder { color: var(--muted); }
     .add-msg { padding: 0 24px 12px; font-family: 'Space Mono', monospace; font-size: 11px; min-height: 18px; }
     .users-list { padding: 4px 0; }
-    .user-row { display: flex; align-items: center; padding: 12px 24px; border-bottom: 1px solid var(--border); transition: background 0.15s; gap: 12px; }
+
+    /* User row rediseñado */
+    .user-row { padding: 14px 24px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
     .user-row:last-child { border-bottom: none; }
     .user-row:hover { background: var(--surface2); }
+    .user-top { display: flex; align-items: center; gap: 12px; }
     .user-avatar { width: 32px; height: 32px; border-radius: 2px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: white; flex-shrink: 0; text-transform: uppercase; }
-    .user-info { flex: 1; min-width: 0; }
-    .user-name { font-weight: 700; font-size: 13px; text-transform: capitalize; }
-    .user-meta { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 3px; }
+    .user-main { flex: 1; min-width: 0; }
+    .user-name { font-weight: 700; font-size: 14px; text-transform: capitalize; }
+    .user-bottom { display: flex; align-items: center; gap: 16px; margin-top: 8px; padding-left: 44px; flex-wrap: wrap; }
+    .user-meta-item { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+    .user-meta-item span { color: var(--text); opacity: 0.7; }
+    .timer-badge { font-family: 'Space Mono', monospace; font-size: 10px; padding: 3px 8px; border-radius: 2px; background: rgba(250,204,21,0.08); color: var(--warning); border: 1px solid rgba(250,204,21,0.15); }
+    .timer-badge.urgent { background: rgba(248,113,113,0.08); color: var(--error); border-color: rgba(248,113,113,0.15); }
     .status-badge { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; white-space: nowrap; flex-shrink: 0; }
     .badge-active { background: rgba(74,222,128,0.1); color: var(--success); border: 1px solid rgba(74,222,128,0.2); }
     .badge-inuse { background: rgba(250,204,21,0.1); color: var(--warning); border: 1px solid rgba(250,204,21,0.2); }
     .badge-inactive { background: rgba(248,113,113,0.1); color: var(--error); border: 1px solid rgba(248,113,113,0.2); }
-    .user-actions { display: flex; gap: 5px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
-    .remote-actions { display: flex; gap: 5px; flex-shrink: 0; }
-    .divider-v { width: 1px; background: var(--border); height: 24px; flex-shrink: 0; }
+    .user-actions { display: flex; gap: 5px; flex-shrink: 0; flex-wrap: wrap; }
+
     .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
     .loading-state { text-align: center; padding: 48px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
     .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
@@ -105,7 +111,6 @@
     .toast.error { border-left: 3px solid var(--error); color: var(--error); }
     .reset-bar { background: rgba(233,69,96,0.05); border: 1px solid rgba(233,69,96,0.2); border-radius: 2px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .reset-bar-text { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
-    .remote-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
   </style>
 </head>
 <body>
@@ -216,6 +221,32 @@
       if (tab === 'logs') cargarLogs();
     };
 
+    // Convierte "2026-05-29 23:11:00 PET" → "29/05/2026 23:11"
+    function formatearFecha(fechaStr) {
+      if (!fechaStr) return null;
+      const match = fechaStr.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2})/);
+      if (!match) return fechaStr;
+      return `${match[3]}/${match[2]}/${match[1]} ${match[4]}`;
+    }
+
+    // Calcula tiempo restante desde ultimo_uso + 4 horas
+    function calcularTiempoRestante(ultimoUso) {
+      if (!ultimoUso) return null;
+      const match = ultimoUso.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
+      if (!match) return null;
+      const fechaUso = new Date(Date.UTC(
+        parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]),
+        parseInt(match[4]) + 5, parseInt(match[5]), parseInt(match[6]) // +5 para convertir PET a UTC
+      ));
+      const expira = new Date(fechaUso.getTime() + 4 * 60 * 60 * 1000);
+      const ahora  = new Date();
+      const diff   = expira - ahora;
+      if (diff <= 0) return "Expirando...";
+      const horas  = Math.floor(diff / 3600000);
+      const mins   = Math.floor((diff % 3600000) / 60000);
+      return `${horas}h ${mins}m restantes`;
+    }
+
     window.cargarUsuarios = async function() {
       const lista = document.getElementById('usersList');
       lista.innerHTML = '<div class="loading-state"><div class="spinner"></div>Cargando...</div>';
@@ -245,30 +276,42 @@
         const badgeClass = u.activo ? 'badge-active' : enUso ? 'badge-inuse' : 'badge-inactive';
         const badgeText  = u.activo ? '● Activo' : enUso ? '⚡ En uso' : '○ Inactivo';
         const usos       = u.usos || 0;
-        const ultimoUso  = u.ultimo_uso ? `Último uso: ${u.ultimo_uso}` : 'Sin uso registrado';
-        const toggleBtn  = u.activo
+        const fechaFmt   = formatearFecha(u.ultimo_uso);
+        const tiempoRest = enUso ? calcularTiempoRestante(u.ultimo_uso) : null;
+        const urgente    = tiempoRest && tiempoRest.startsWith('0h');
+
+        const toggleBtn = u.activo
           ? `<button class="btn btn-warning" onclick="toggleUsuario('${u.id}', false)">Desactivar</button>`
           : `<button class="btn btn-success" onclick="toggleUsuario('${u.id}', true)">Activar</button>`;
 
-        // Botones remotos solo si está en uso
         const remoteBtns = enUso ? `
-          <div class="divider-v"></div>
-          <button class="btn btn-purple" onclick="enviarComando('${u.id}', 'ocultar')" title="Ocultar RustDesk remotamente">🙈 Ocultar</button>
-          <button class="btn btn-cyan" onclick="enviarComando('${u.id}', 'mostrar')" title="Mostrar RustDesk remotamente">👁️ Mostrar</button>
+          <button class="btn btn-purple" onclick="enviarComando('${u.id}', 'ocultar')">🙈 Ocultar</button>
+          <button class="btn btn-cyan" onclick="enviarComando('${u.id}', 'mostrar')">👁️ Mostrar</button>
         ` : '';
+
+        const timerHtml = tiempoRest ? `
+          <div class="user-meta-item">
+            <span class="timer-badge ${urgente ? 'urgent' : ''}">⏱ ${tiempoRest}</span>
+          </div>` : '';
 
         return `
           <div class="user-row">
-            <div class="user-avatar">${u.id.charAt(0)}</div>
-            <div class="user-info">
-              <div class="user-name">${u.id}</div>
-              <div class="user-meta">${ultimoUso} · Usos totales: ${usos}</div>
+            <div class="user-top">
+              <div class="user-avatar">${u.id.charAt(0)}</div>
+              <div class="user-main">
+                <div class="user-name">${u.id}</div>
+              </div>
+              <span class="status-badge ${badgeClass}">${badgeText}</span>
+              <div class="user-actions">
+                ${toggleBtn}
+                <button class="btn btn-danger" onclick="eliminarUsuario('${u.id}')">Eliminar</button>
+                ${remoteBtns}
+              </div>
             </div>
-            <span class="status-badge ${badgeClass}">${badgeText}</span>
-            <div class="user-actions">
-              ${toggleBtn}
-              <button class="btn btn-danger" onclick="eliminarUsuario('${u.id}')">Eliminar</button>
-              ${remoteBtns}
+            <div class="user-bottom">
+              <div class="user-meta-item">📅 <span>${fechaFmt ? `Último uso: ${fechaFmt}` : 'Sin uso registrado'}</span></div>
+              <div class="user-meta-item">🔢 <span>Usos: ${usos}</span></div>
+              ${timerHtml}
             </div>
           </div>`;
       }).join('');
@@ -282,9 +325,7 @@
     window.enviarComando = async function(id, comando) {
       try {
         await updateDoc(doc(db, 'usuarios', id), { comando });
-
-        // Registrar en logs
-        const ahora = new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
+        const ahora = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima', hour12: false }).replace(',', '');
         await fetch(`https://firestore.googleapis.com/v1/projects/ocultador-auth/databases/(default)/documents/logs?key=AIzaSyCmbktRxMEB4Udn_bmmEqjrgOy1giKaPX0`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -294,11 +335,8 @@
             accion:  { stringValue: comando }
           }})
         });
-
         showToast(`Comando "${comando}" enviado a "${id}"`, 'success');
-      } catch (e) {
-        showToast('Error al enviar comando', 'error');
-      }
+      } catch (e) { showToast('Error al enviar comando', 'error'); }
     };
 
     window.agregarUsuario = async function() {
