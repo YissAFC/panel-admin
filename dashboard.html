@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Panel Admin — Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -14,23 +14,27 @@
     }
     body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
     body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(233,69,96,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(233,69,96,0.02) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+
     nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 32px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-    .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; letter-spacing: 0.05em; text-transform: uppercase; font-family: 'Segoe UI', sans-serif; }
     .nav-logo span { color: var(--accent); }
     .nav-right { display: flex; align-items: center; gap: 16px; }
     .admin-badge { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
     .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
     .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+
     .tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
     .tab { background: transparent; border: none; color: var(--muted); padding: 10px 20px; font-family: 'Segoe UI', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; }
     .tab:hover { color: var(--text); }
     .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
+
     main { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
     .page-header { margin-bottom: 28px; }
     h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; }
     .page-sub { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
     .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
     .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 18px 20px; position: relative; overflow: hidden; }
     .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
@@ -42,10 +46,22 @@
     .stat-card.green .stat-value { color: var(--success); }
     .stat-card.yellow .stat-value { color: var(--warning); }
     .stat-card.red .stat-value { color: var(--error); }
-    .toolbar { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
-    .search-input { flex: 1; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 9px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 12px; outline: none; transition: border-color 0.2s; }
+
+    /* Barra superior de usuarios */
+    .users-topbar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .users-topbar-left { flex: 1; display: flex; gap: 8px; align-items: center; }
+    .users-topbar-right { display: flex; gap: 8px; align-items: center; }
+    .search-input { width: 220px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 8px 12px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 11px; outline: none; transition: border-color 0.2s; }
     .search-input:focus { border-color: var(--accent); }
     .search-input::placeholder { color: var(--muted); }
+    .add-input { width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 8px 12px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 11px; outline: none; transition: border-color 0.2s; }
+    .add-input:focus { border-color: var(--accent); }
+    .add-input::placeholder { color: var(--muted); }
+    #sortSelect { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 8px 12px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 11px; outline: none; cursor: pointer; transition: border-color 0.2s; }
+    #sortSelect:hover { border-color: var(--accent); }
+    #sortSelect option { background: var(--surface); color: var(--text); }
+    .add-msg { font-family: 'Space Mono', monospace; font-size: 11px; min-height: 16px; margin-bottom: 8px; }
+
     .btn { padding: 7px 14px; border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.08em; cursor: pointer; border: 1px solid; transition: all 0.2s; text-transform: uppercase; white-space: nowrap; }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
@@ -64,14 +80,11 @@
     .btn-cyan:hover:not(:disabled) { background: rgba(34,211,238,0.1); }
     .btn-nota { background: rgba(137,180,250,0.1); border-color: #89b4fa; color: #89b4fa; }
     .btn-nota:hover { background: rgba(137,180,250,0.2); }
+
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; margin-bottom: 16px; }
     .card-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .card-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
-    .add-row { display: flex; gap: 10px; padding: 16px 24px; }
-    .add-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 2px; padding: 9px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 12px; outline: none; transition: border-color 0.2s; }
-    .add-row input:focus { border-color: var(--accent); }
-    .add-row input::placeholder { color: var(--muted); }
-    .add-msg { padding: 0 24px 12px; font-family: 'Space Mono', monospace; font-size: 11px; min-height: 18px; }
+
     .users-list { padding: 4px 0; }
     .user-row { padding: 14px 24px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
     .user-row:last-child { border-bottom: none; }
@@ -80,7 +93,7 @@
     .user-avatar { width: 32px; height: 32px; border-radius: 2px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: white; flex-shrink: 0; text-transform: uppercase; }
     .user-main { flex: 1; min-width: 0; }
     .user-name { font-weight: 700; font-size: 14px; }
-    .user-note { font-family: 'Space Mono', monospace; font-size: 11px; color: #89b4fa; margin-top: 3px; font-weight: 700; }
+    .user-note { font-family: 'Space Mono', monospace; font-size: 11px; color: #89b4fa; margin-top: 2px; font-weight: 700; }
     .user-bottom { display: flex; align-items: center; gap: 16px; margin-top: 8px; padding-left: 44px; flex-wrap: wrap; }
     .user-meta-item { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
     .user-meta-item span { color: var(--text); opacity: 0.7; }
@@ -91,7 +104,8 @@
     .badge-inuse { background: rgba(250,204,21,0.1); color: var(--warning); border: 1px solid rgba(250,204,21,0.2); }
     .badge-inactive { background: rgba(248,113,113,0.1); color: var(--error); border: 1px solid rgba(248,113,113,0.2); }
     .user-actions { display: flex; gap: 5px; flex-shrink: 0; flex-wrap: wrap; }
-    /* Modal de nota */
+
+    /* Modal */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .modal-overlay.show { opacity: 1; pointer-events: all; }
     .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 28px; width: 100%; max-width: 400px; position: relative; }
@@ -100,19 +114,22 @@
     .modal textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 2px; padding: 10px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 12px; outline: none; resize: vertical; min-height: 80px; transition: border-color 0.2s; }
     .modal textarea:focus { border-color: var(--accent); }
     .modal-actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
+
     /* Gráfico */
     .chart-container { padding: 24px; }
     .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 140px; margin-bottom: 8px; }
     .chart-bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
-    .chart-bar { width: 100%; background: var(--accent); border-radius: 2px 2px 0 0; min-height: 2px; transition: height 0.5s cubic-bezier(0.16,1,0.3,1); opacity: 0.8; position: relative; }
+    .chart-bar { width: 100%; background: var(--accent); border-radius: 2px 2px 0 0; min-height: 2px; transition: height 0.5s cubic-bezier(0.16,1,0.3,1); opacity: 0.8; }
     .chart-bar:hover { opacity: 1; }
     .chart-bar-val { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); margin-bottom: 4px; }
     .chart-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 6px; text-align: center; }
     .chart-empty { text-align: center; padding: 40px; font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); }
+
     .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
     .loading-state { text-align: center; padding: 48px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
     .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
     .log-row { display: flex; align-items: center; padding: 10px 24px; border-bottom: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 11px; gap: 16px; }
     .log-row:last-child { border-bottom: none; }
     .log-row:hover { background: var(--surface2); }
@@ -123,12 +140,14 @@
     .log-action.mostrar { color: #22d3ee; }
     .log-action.cerrar { color: var(--error); }
     .log-date { color: var(--muted); font-size: 10px; }
+
+    .reset-bar { background: rgba(233,69,96,0.05); border: 1px solid rgba(233,69,96,0.2); border-radius: 2px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .reset-bar-text { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+
     .toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 12px 20px; font-family: 'Space Mono', monospace; font-size: 12px; transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); z-index: 999; }
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.success { border-left: 3px solid var(--success); color: var(--success); }
     .toast.error { border-left: 3px solid var(--error); color: var(--error); }
-    .reset-bar { background: rgba(233,69,96,0.05); border: 1px solid rgba(233,69,96,0.2); border-radius: 2px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .reset-bar-text { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
   </style>
 </head>
 <body>
@@ -164,18 +183,26 @@
         <span class="reset-bar-text">⚡ Resetear todos los usuarios en uso a activos de un solo clic</span>
         <button class="btn btn-warning" onclick="resetearTodos()">↺ Resetear todos</button>
       </div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">Agregar nuevo usuario</span></div>
-        <div class="add-row">
-          <input type="text" id="newUser" placeholder="nombre de usuario (ej: Boris)" />
+
+      <!-- Barra superior compacta -->
+      <div class="users-topbar">
+        <div class="users-topbar-left">
+          <input type="text" class="search-input" id="searchInput" placeholder="🔍 Buscar usuario..." oninput="filtrarUsuarios()" />
+          <select id="sortSelect" onchange="ordenarUsuarios()">
+            <option value="nombre">A→Z</option>
+            <option value="usos">Más usos</option>
+            <option value="ultimo_uso">Último uso</option>
+            <option value="estado">Por estado</option>
+          </select>
+          <button class="btn btn-outline" onclick="cargarUsuarios()">↻</button>
+        </div>
+        <div class="users-topbar-right">
+          <input type="text" class="add-input" id="newUser" placeholder="Nuevo usuario..." />
           <button class="btn btn-primary" onclick="agregarUsuario()">+ Agregar</button>
         </div>
-        <div class="add-msg" id="addMsg"></div>
       </div>
-      <div class="toolbar">
-        <input type="text" class="search-input" id="searchInput" placeholder="Buscar usuario..." oninput="filtrarUsuarios()" />
-        <button class="btn btn-outline" onclick="cargarUsuarios()">↻ Actualizar</button>
-      </div>
+      <div class="add-msg" id="addMsg"></div>
+
       <div class="card">
         <div class="card-header">
           <span class="card-title">Usuarios registrados</span>
@@ -202,16 +229,7 @@
 
     <!-- Tab Logs -->
     <div class="tab-content" id="tab-logs">
-      <div class="toolbar">
-      <input type="text" class="search-input" id="searchInput" placeholder="Buscar usuario..." oninput="filtrarUsuarios()" />
-      <select id="sortSelect" onchange="ordenarUsuarios()" style="background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:9px 14px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;outline:none;cursor:pointer;">
-        <option value="nombre">Nombre</option>
-        <option value="usos">Más usos</option>
-        <option value="ultimo_uso">Último uso</option>
-        <option value="estado">Estado</option>
-      </select>
-      <button class="btn btn-outline" onclick="cargarUsuarios()">↻ Actualizar</button>
-</div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;">
         <button class="btn btn-outline" onclick="cargarLogs()">↻ Actualizar logs</button>
         <button class="btn btn-danger" onclick="limpiarLogs()">🗑 Limpiar logs</button>
       </div>
@@ -342,6 +360,9 @@
           <button class="btn btn-danger" onclick="confirmarCerrar('${u.id}')">⏹ Cerrar</button>
         ` : '';
 
+        const eliminarBtn = !enUso
+          ? `<button class="btn btn-danger" onclick="eliminarUsuario('${u.id}')">Eliminar</button>` : '';
+
         const timerHtml = tiempoRest ? `
           <div class="user-meta-item">
             <span class="timer-badge ${urgente ? 'urgent' : ''}">⏱ ${tiempoRest}</span>
@@ -350,7 +371,7 @@
         return `
           <div class="user-row">
             <div class="user-top">
-              <div class="user-avatar">${u.id.charAt(0)}</div>
+              <div class="user-avatar">${u.id.charAt(0).toUpperCase()}</div>
               <div class="user-main">
                 <div class="user-name">${u.id}</div>
                 ${nota ? `<div class="user-note">📝 ${nota}</div>` : ''}
@@ -359,7 +380,7 @@
               <div class="user-actions">
                 ${toggleBtn}
                 <button class="btn btn-nota" onclick="abrirModal('${u.id}', \`${nota.replace(/`/g, "'")}\`)">${nota ? '📝 Nota' : '📝 Añadir nota'}</button>
-                ${!enUso ? `<button class="btn btn-danger" onclick="eliminarUsuario('${u.id}')">Eliminar</button>` : ''}
+                ${eliminarBtn}
                 ${remoteBtns}
               </div>
             </div>
@@ -372,12 +393,28 @@
       }).join('');
     }
 
+    window.ordenarUsuarios = function() {
+      const criterio = document.getElementById('sortSelect').value;
+      const sorted = [...todosUsuarios].sort((a, b) => {
+        if (criterio === 'nombre')     return a.id.localeCompare(b.id);
+        if (criterio === 'usos')       return (b.usos || 0) - (a.usos || 0);
+        if (criterio === 'ultimo_uso') return (b.ultimo_uso || '').localeCompare(a.ultimo_uso || '');
+        if (criterio === 'estado') {
+          const orden = { 'true': 0, 'en_uso': 1, 'false': 2 };
+          const ea = a.en_uso ? 'en_uso' : String(a.activo);
+          const eb = b.en_uso ? 'en_uso' : String(b.activo);
+          return (orden[ea] ?? 3) - (orden[eb] ?? 3);
+        }
+        return 0;
+      });
+      renderUsuarios(sorted);
+    };
+
     window.filtrarUsuarios = function() {
       const q = document.getElementById('searchInput').value.toLowerCase();
       renderUsuarios(todosUsuarios.filter(u => u.id.toLowerCase().includes(q)));
     };
 
-    // ── Modal nota ─────────────────────────────────────────────────────────
     window.abrirModal = function(id, nota) {
       document.getElementById('modalUserId').value = id;
       document.getElementById('modalNota').value = nota;
@@ -403,7 +440,6 @@
       if (e.target === this) cerrarModal();
     });
 
-    // ── Comandos remotos ───────────────────────────────────────────────────
     window.enviarComando = async function(id, comando) {
       try {
         await updateDoc(doc(db, 'usuarios', id), { comando });
@@ -421,76 +457,10 @@
     };
 
     window.confirmarCerrar = function(id) {
-      if (!confirm(`¿Cerrar el .exe de "${id}" remotamente? El usuario quedará activo nuevamente.`)) return;
+      if (!confirm(`¿Cerrar el .exe de "${id}" remotamente?`)) return;
       window.enviarComando(id, 'cerrar');
     };
 
-    // ── Gráfico ────────────────────────────────────────────────────────────
-    window.cargarGrafico = async function() {
-      const container = document.getElementById('chartContainer');
-      container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Cargando datos...</div>';
-      try {
-        const snap = await getDocs(query(collection(db, 'logs'), orderBy('fecha', 'desc'), limit(500)));
-        const conteo = {};
-
-        // Generar últimos 14 días
-        for (let i = 13; i >= 0; i--) {
-          const d = new Date();
-          d.setDate(d.getDate() - i);
-          const key = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
-          conteo[key] = 0;
-        }
-
-        snap.forEach(d => {
-          const fecha = d.data().fecha || '';
-          // Intentar extraer dd/mm del formato guardado
-          const matchPET = fecha.match(/(\d{4})-(\d{2})-(\d{2})/);
-          const matchFmt = fecha.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-          let key = null;
-          if (matchPET) key = `${matchPET[3]}/${matchPET[2]}`;
-          else if (matchFmt) key = `${matchFmt[1]}/${matchFmt[2]}`;
-          if (key && conteo.hasOwnProperty(key)) conteo[key]++;
-        });
-
-        const dias   = Object.keys(conteo);
-        const vals   = Object.values(conteo);
-        const maxVal = Math.max(...vals, 1);
-
-        if (vals.every(v => v === 0)) {
-          container.innerHTML = '<div class="chart-empty">No hay datos de uso en los últimos 14 días.</div>';
-          return;
-        }
-
-        container.innerHTML = `
-          <div class="chart-bars" id="chartBars"></div>
-          <div style="display:flex;gap:6px" id="chartLabels"></div>
-        `;
-
-        const barsEl   = document.getElementById('chartBars');
-        const labelsEl = document.getElementById('chartLabels');
-
-        dias.forEach((dia, i) => {
-          const pct  = (vals[i] / maxVal) * 100;
-          const wrap = document.createElement('div');
-          wrap.className = 'chart-bar-wrap';
-          wrap.innerHTML = `
-            <div class="chart-bar-val">${vals[i] > 0 ? vals[i] : ''}</div>
-            <div class="chart-bar" style="height:${pct}%" title="${dia}: ${vals[i]} usos"></div>
-          `;
-          barsEl.appendChild(wrap);
-
-          const lbl = document.createElement('div');
-          lbl.style.cssText = 'flex:1;font-family:Space Mono,monospace;font-size:9px;color:var(--muted);text-align:center;';
-          lbl.textContent = dia;
-          labelsEl.appendChild(lbl);
-        });
-
-      } catch (e) {
-        container.innerHTML = '<div class="chart-empty">Error al cargar el gráfico.</div>';
-      }
-    };
-
-    // ── CRUD usuarios ──────────────────────────────────────────────────────
     window.agregarUsuario = async function() {
       const input = document.getElementById('newUser');
       const nombre = input.value.trim();
@@ -519,6 +489,7 @@
         cargarUsuarios();
       } catch (e) { showToast('Error al actualizar', 'error'); }
     };
+
     window.eliminarUsuario = async function(id) {
       if (!confirm(`¿Eliminar al usuario "${id}"?`)) return;
       try {
@@ -542,6 +513,53 @@
         showToast('Todos los usuarios reseteados ✓', 'success');
         cargarUsuarios();
       } catch (e) { showToast('Error al resetear', 'error'); }
+    };
+
+    window.cargarGrafico = async function() {
+      const container = document.getElementById('chartContainer');
+      container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Cargando datos...</div>';
+      try {
+        const snap = await getDocs(query(collection(db, 'logs'), orderBy('fecha', 'desc'), limit(500)));
+        const conteo = {};
+        for (let i = 13; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const key = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+          conteo[key] = 0;
+        }
+        snap.forEach(d => {
+          const fecha = d.data().fecha || '';
+          const matchPET = fecha.match(/(\d{4})-(\d{2})-(\d{2})/);
+          const matchFmt = fecha.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+          let key = null;
+          if (matchPET) key = `${matchPET[3]}/${matchPET[2]}`;
+          else if (matchFmt) key = `${matchFmt[1]}/${matchFmt[2]}`;
+          if (key && conteo.hasOwnProperty(key)) conteo[key]++;
+        });
+        const dias = Object.keys(conteo);
+        const vals = Object.values(conteo);
+        const maxVal = Math.max(...vals, 1);
+        if (vals.every(v => v === 0)) {
+          container.innerHTML = '<div class="chart-empty">No hay datos de uso en los últimos 14 días.</div>';
+          return;
+        }
+        container.innerHTML = `<div class="chart-bars" id="chartBars"></div><div style="display:flex;gap:6px" id="chartLabels"></div>`;
+        const barsEl = document.getElementById('chartBars');
+        const labelsEl = document.getElementById('chartLabels');
+        dias.forEach((dia, i) => {
+          const pct = (vals[i] / maxVal) * 100;
+          const wrap = document.createElement('div');
+          wrap.className = 'chart-bar-wrap';
+          wrap.innerHTML = `<div class="chart-bar-val">${vals[i] > 0 ? vals[i] : ''}</div><div class="chart-bar" style="height:${pct}%" title="${dia}: ${vals[i]} usos"></div>`;
+          barsEl.appendChild(wrap);
+          const lbl = document.createElement('div');
+          lbl.style.cssText = 'flex:1;font-family:Space Mono,monospace;font-size:9px;color:var(--muted);text-align:center;';
+          lbl.textContent = dia;
+          labelsEl.appendChild(lbl);
+        });
+      } catch (e) {
+        container.innerHTML = '<div class="chart-empty">Error al cargar el gráfico.</div>';
+      }
     };
 
     window.cargarLogs = async function() {
@@ -584,23 +602,6 @@
     document.getElementById('newUser')?.addEventListener('keydown', e => {
       if (e.key === 'Enter') window.agregarUsuario();
     });
-
-    window.ordenarUsuarios = function() {
-      const criterio = document.getElementById('sortSelect').value;
-      const sorted = [...todosUsuarios].sort((a, b) => {
-        if (criterio === 'nombre')     return a.id.localeCompare(b.id);
-        if (criterio === 'usos')       return (b.usos || 0) - (a.usos || 0);
-        if (criterio === 'ultimo_uso') return (b.ultimo_uso || '').localeCompare(a.ultimo_uso || '');
-        if (criterio === 'estado') {
-          const orden = { true: 0, en_uso: 1, false: 2 };
-          const ea = a.en_uso ? 'en_uso' : String(a.activo);
-          const eb = b.en_uso ? 'en_uso' : String(b.activo);
-          return (orden[ea] ?? 3) - (orden[eb] ?? 3);
-        }
-        return 0;
-      });
-      renderUsuarios(sorted);
-    };
   </script>
 </body>
 </html>
