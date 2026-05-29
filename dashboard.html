@@ -71,8 +71,6 @@
     .add-row input::placeholder { color: var(--muted); }
     .add-msg { padding: 0 24px 12px; font-family: 'Space Mono', monospace; font-size: 11px; min-height: 18px; }
     .users-list { padding: 4px 0; }
-
-    /* User row rediseñado */
     .user-row { padding: 14px 24px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
     .user-row:last-child { border-bottom: none; }
     .user-row:hover { background: var(--surface2); }
@@ -80,6 +78,7 @@
     .user-avatar { width: 32px; height: 32px; border-radius: 2px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: white; flex-shrink: 0; text-transform: uppercase; }
     .user-main { flex: 1; min-width: 0; }
     .user-name { font-weight: 700; font-size: 14px; text-transform: capitalize; }
+    .user-note { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 2px; font-style: italic; }
     .user-bottom { display: flex; align-items: center; gap: 16px; margin-top: 8px; padding-left: 44px; flex-wrap: wrap; }
     .user-meta-item { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
     .user-meta-item span { color: var(--text); opacity: 0.7; }
@@ -90,12 +89,28 @@
     .badge-inuse { background: rgba(250,204,21,0.1); color: var(--warning); border: 1px solid rgba(250,204,21,0.2); }
     .badge-inactive { background: rgba(248,113,113,0.1); color: var(--error); border: 1px solid rgba(248,113,113,0.2); }
     .user-actions { display: flex; gap: 5px; flex-shrink: 0; flex-wrap: wrap; }
-
+    /* Modal de nota */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .modal-overlay.show { opacity: 1; pointer-events: all; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 28px; width: 100%; max-width: 400px; position: relative; }
+    .modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), transparent); }
+    .modal h3 { font-size: 16px; font-weight: 800; margin-bottom: 16px; }
+    .modal textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 2px; padding: 10px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 12px; outline: none; resize: vertical; min-height: 80px; transition: border-color 0.2s; }
+    .modal textarea:focus { border-color: var(--accent); }
+    .modal-actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
+    /* Gráfico */
+    .chart-container { padding: 24px; }
+    .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 140px; margin-bottom: 8px; }
+    .chart-bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
+    .chart-bar { width: 100%; background: var(--accent); border-radius: 2px 2px 0 0; min-height: 2px; transition: height 0.5s cubic-bezier(0.16,1,0.3,1); opacity: 0.8; position: relative; }
+    .chart-bar:hover { opacity: 1; }
+    .chart-bar-val { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); margin-bottom: 4px; }
+    .chart-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 6px; text-align: center; }
+    .chart-empty { text-align: center; padding: 40px; font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); }
     .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
     .loading-state { text-align: center; padding: 48px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
     .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .log-row { display: flex; align-items: center; padding: 10px 24px; border-bottom: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 11px; gap: 16px; }
     .log-row:last-child { border-bottom: none; }
     .log-row:hover { background: var(--surface2); }
@@ -104,6 +119,7 @@
     .log-action.login { color: var(--success); }
     .log-action.ocultar { color: #a78bfa; }
     .log-action.mostrar { color: #22d3ee; }
+    .log-action.cerrar { color: var(--error); }
     .log-date { color: var(--muted); font-size: 10px; }
     .toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 12px 20px; font-family: 'Space Mono', monospace; font-size: 12px; transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); z-index: 999; }
     .toast.show { transform: translateY(0); opacity: 1; }
@@ -135,16 +151,17 @@
     </div>
 
     <div class="tabs">
-      <button class="tab active" id="tab-btn-usuarios" onclick="switchTab('usuarios', this)">Usuarios</button>
-      <button class="tab" id="tab-btn-logs" onclick="switchTab('logs', this)">Logs de actividad</button>
+      <button class="tab active" onclick="switchTab('usuarios', this)">Usuarios</button>
+      <button class="tab" onclick="switchTab('grafico', this)">Gráfico de usos</button>
+      <button class="tab" onclick="switchTab('logs', this)">Logs de actividad</button>
     </div>
 
+    <!-- Tab Usuarios -->
     <div class="tab-content active" id="tab-usuarios">
       <div class="reset-bar">
         <span class="reset-bar-text">⚡ Resetear todos los usuarios en uso a activos de un solo clic</span>
         <button class="btn btn-warning" onclick="resetearTodos()">↺ Resetear todos</button>
       </div>
-
       <div class="card">
         <div class="card-header"><span class="card-title">Agregar nuevo usuario</span></div>
         <div class="add-row">
@@ -153,12 +170,10 @@
         </div>
         <div class="add-msg" id="addMsg"></div>
       </div>
-
       <div class="toolbar">
         <input type="text" class="search-input" id="searchInput" placeholder="Buscar usuario..." oninput="filtrarUsuarios()" />
         <button class="btn btn-outline" onclick="cargarUsuarios()">↻ Actualizar</button>
       </div>
-
       <div class="card">
         <div class="card-header">
           <span class="card-title">Usuarios registrados</span>
@@ -170,6 +185,20 @@
       </div>
     </div>
 
+    <!-- Tab Gráfico -->
+    <div class="tab-content" id="tab-grafico">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Usos por día (últimos 14 días)</span>
+          <button class="btn btn-outline" onclick="cargarGrafico()">↻ Actualizar</button>
+        </div>
+        <div class="chart-container" id="chartContainer">
+          <div class="loading-state"><div class="spinner"></div>Cargando datos...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Logs -->
     <div class="tab-content" id="tab-logs">
       <div class="toolbar">
         <button class="btn btn-outline" onclick="cargarLogs()">↻ Actualizar logs</button>
@@ -181,6 +210,19 @@
       </div>
     </div>
   </main>
+
+  <!-- Modal nota -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h3>📝 Nota del usuario</h3>
+      <input type="hidden" id="modalUserId" />
+      <textarea id="modalNota" placeholder="Ej: PC de Juan, laboratorio 3..."></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="cerrarModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="guardarNota()">Guardar</button>
+      </div>
+    </div>
+  </div>
 
   <div class="toast" id="toast"></div>
 
@@ -219,9 +261,9 @@
       document.getElementById(`tab-${tab}`).classList.add('active');
       el.classList.add('active');
       if (tab === 'logs') cargarLogs();
+      if (tab === 'grafico') cargarGrafico();
     };
 
-    // Convierte "2026-05-29 23:11:00 PET" → "29/05/2026 23:11"
     function formatearFecha(fechaStr) {
       if (!fechaStr) return null;
       const match = fechaStr.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2})/);
@@ -229,21 +271,19 @@
       return `${match[3]}/${match[2]}/${match[1]} ${match[4]}`;
     }
 
-    // Calcula tiempo restante desde ultimo_uso + 4 horas
     function calcularTiempoRestante(ultimoUso) {
       if (!ultimoUso) return null;
       const match = ultimoUso.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
       if (!match) return null;
       const fechaUso = new Date(Date.UTC(
         parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]),
-        parseInt(match[4]) + 5, parseInt(match[5]), parseInt(match[6]) // +5 para convertir PET a UTC
+        parseInt(match[4]) + 5, parseInt(match[5]), parseInt(match[6])
       ));
       const expira = new Date(fechaUso.getTime() + 4 * 60 * 60 * 1000);
-      const ahora  = new Date();
-      const diff   = expira - ahora;
+      const diff   = expira - new Date();
       if (diff <= 0) return "Expirando...";
-      const horas  = Math.floor(diff / 3600000);
-      const mins   = Math.floor((diff % 3600000) / 60000);
+      const horas = Math.floor(diff / 3600000);
+      const mins  = Math.floor((diff % 3600000) / 60000);
       return `${horas}h ${mins}m restantes`;
     }
 
@@ -279,6 +319,7 @@
         const fechaFmt   = formatearFecha(u.ultimo_uso);
         const tiempoRest = enUso ? calcularTiempoRestante(u.ultimo_uso) : null;
         const urgente    = tiempoRest && tiempoRest.startsWith('0h');
+        const nota       = u.nota || '';
 
         const toggleBtn = u.activo
           ? `<button class="btn btn-warning" onclick="toggleUsuario('${u.id}', false)">Desactivar</button>`
@@ -287,6 +328,7 @@
         const remoteBtns = enUso ? `
           <button class="btn btn-purple" onclick="enviarComando('${u.id}', 'ocultar')">🙈 Ocultar</button>
           <button class="btn btn-cyan" onclick="enviarComando('${u.id}', 'mostrar')">👁️ Mostrar</button>
+          <button class="btn btn-danger" onclick="confirmarCerrar('${u.id}')">⏹ Cerrar</button>
         ` : '';
 
         const timerHtml = tiempoRest ? `
@@ -300,10 +342,12 @@
               <div class="user-avatar">${u.id.charAt(0)}</div>
               <div class="user-main">
                 <div class="user-name">${u.id}</div>
+                ${nota ? `<div class="user-note">📝 ${nota}</div>` : ''}
               </div>
               <span class="status-badge ${badgeClass}">${badgeText}</span>
               <div class="user-actions">
                 ${toggleBtn}
+                <button class="btn btn-outline" onclick="abrirModal('${u.id}', \`${nota.replace(/`/g, "'")}\`)">📝</button>
                 <button class="btn btn-danger" onclick="eliminarUsuario('${u.id}')">Eliminar</button>
                 ${remoteBtns}
               </div>
@@ -322,13 +366,39 @@
       renderUsuarios(todosUsuarios.filter(u => u.id.toLowerCase().includes(q)));
     };
 
+    // ── Modal nota ─────────────────────────────────────────────────────────
+    window.abrirModal = function(id, nota) {
+      document.getElementById('modalUserId').value = id;
+      document.getElementById('modalNota').value = nota;
+      document.getElementById('modalOverlay').classList.add('show');
+    };
+
+    window.cerrarModal = function() {
+      document.getElementById('modalOverlay').classList.remove('show');
+    };
+
+    window.guardarNota = async function() {
+      const id   = document.getElementById('modalUserId').value;
+      const nota = document.getElementById('modalNota').value.trim();
+      try {
+        await updateDoc(doc(db, 'usuarios', id), { nota });
+        showToast('Nota guardada ✓', 'success');
+        cerrarModal();
+        cargarUsuarios();
+      } catch (e) { showToast('Error al guardar nota', 'error'); }
+    };
+
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+      if (e.target === this) cerrarModal();
+    });
+
+    // ── Comandos remotos ───────────────────────────────────────────────────
     window.enviarComando = async function(id, comando) {
       try {
         await updateDoc(doc(db, 'usuarios', id), { comando });
-        const ahora = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima', hour12: false }).replace(',', '');
+        const ahora = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima', hour12: false });
         await fetch(`https://firestore.googleapis.com/v1/projects/ocultador-auth/databases/(default)/documents/logs?key=AIzaSyCmbktRxMEB4Udn_bmmEqjrgOy1giKaPX0`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ fields: {
             usuario: { stringValue: id },
             fecha:   { stringValue: ahora },
@@ -339,6 +409,77 @@
       } catch (e) { showToast('Error al enviar comando', 'error'); }
     };
 
+    window.confirmarCerrar = function(id) {
+      if (!confirm(`¿Cerrar el .exe de "${id}" remotamente? El usuario quedará activo nuevamente.`)) return;
+      window.enviarComando(id, 'cerrar');
+    };
+
+    // ── Gráfico ────────────────────────────────────────────────────────────
+    window.cargarGrafico = async function() {
+      const container = document.getElementById('chartContainer');
+      container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Cargando datos...</div>';
+      try {
+        const snap = await getDocs(query(collection(db, 'logs'), orderBy('fecha', 'desc'), limit(500)));
+        const conteo = {};
+
+        // Generar últimos 14 días
+        for (let i = 13; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const key = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+          conteo[key] = 0;
+        }
+
+        snap.forEach(d => {
+          const fecha = d.data().fecha || '';
+          // Intentar extraer dd/mm del formato guardado
+          const matchPET = fecha.match(/(\d{4})-(\d{2})-(\d{2})/);
+          const matchFmt = fecha.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+          let key = null;
+          if (matchPET) key = `${matchPET[3]}/${matchPET[2]}`;
+          else if (matchFmt) key = `${matchFmt[1]}/${matchFmt[2]}`;
+          if (key && conteo.hasOwnProperty(key)) conteo[key]++;
+        });
+
+        const dias   = Object.keys(conteo);
+        const vals   = Object.values(conteo);
+        const maxVal = Math.max(...vals, 1);
+
+        if (vals.every(v => v === 0)) {
+          container.innerHTML = '<div class="chart-empty">No hay datos de uso en los últimos 14 días.</div>';
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="chart-bars" id="chartBars"></div>
+          <div style="display:flex;gap:6px" id="chartLabels"></div>
+        `;
+
+        const barsEl   = document.getElementById('chartBars');
+        const labelsEl = document.getElementById('chartLabels');
+
+        dias.forEach((dia, i) => {
+          const pct  = (vals[i] / maxVal) * 100;
+          const wrap = document.createElement('div');
+          wrap.className = 'chart-bar-wrap';
+          wrap.innerHTML = `
+            <div class="chart-bar-val">${vals[i] > 0 ? vals[i] : ''}</div>
+            <div class="chart-bar" style="height:${pct}%" title="${dia}: ${vals[i]} usos"></div>
+          `;
+          barsEl.appendChild(wrap);
+
+          const lbl = document.createElement('div');
+          lbl.style.cssText = 'flex:1;font-family:Space Mono,monospace;font-size:9px;color:var(--muted);text-align:center;';
+          lbl.textContent = dia;
+          labelsEl.appendChild(lbl);
+        });
+
+      } catch (e) {
+        container.innerHTML = '<div class="chart-empty">Error al cargar el gráfico.</div>';
+      }
+    };
+
+    // ── CRUD usuarios ──────────────────────────────────────────────────────
     window.agregarUsuario = async function() {
       const input = document.getElementById('newUser');
       const nombre = input.value.trim();
@@ -348,7 +489,7 @@
         const ref = doc(db, 'usuarios', nombre);
         const existe = await getDoc(ref);
         if (existe.exists()) { msg.style.color = 'var(--error)'; msg.textContent = '⚠ Este usuario ya existe'; return; }
-        await setDoc(ref, { activo: true, en_uso: false, usos: 0, comando: '' });
+        await setDoc(ref, { activo: true, en_uso: false, usos: 0, comando: '', nota: '' });
         input.value = '';
         msg.style.color = 'var(--success)';
         msg.textContent = `✓ Usuario "${nombre}" creado`;
