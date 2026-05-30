@@ -582,12 +582,13 @@
         const logs = [];
         snap.forEach(d => logs.push({ id: d.id, ...d.data() }));
         if (logs.length === 0) { lista.innerHTML = '<div class="empty-state">No hay logs registrados.</div>'; return; }
-        lista.innerHTML = logs.map(l => `
-          <div class="log-row">
-            <span class="log-user">${l.usuario}</span>
-            <span class="log-action ${l.accion}">${l.accion}</span>
-            <span class="log-date">${l.fecha}</span>
-          </div>`).join('');
+      lista.innerHTML = logs.map(l => `
+      <div class="log-row">
+        <span class="log-user">${l.usuario}</span>
+        <span class="log-action ${l.accion}">${l.accion}</span>
+        <span class="log-date">${l.fecha}</span>
+        ${l.ip ? `<span style="font-family:'Space Mono',monospace;font-size:10px;color:#a78bfa;">🌐 ${l.ip}</span>` : ''}
+      </div>`).join('');
       } catch (e) { lista.innerHTML = '<div class="empty-state">Error al cargar logs.</div>'; }
     };
 
