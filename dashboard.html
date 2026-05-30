@@ -613,6 +613,13 @@
     };
 
     document.getElementById('newUser')?.addEventListener('keydown', e => { if (e.key === 'Enter') window.agregarUsuario(); });
+    // Auto-actualizar cada 30 segundos
+    setInterval(() => {
+      const tabActiva = document.querySelector('.tab-content.active');
+      if (tabActiva.id === 'tab-usuarios') cargarUsuarios();
+      if (tabActiva.id === 'tab-logs')    cargarLogs();
+      if (tabActiva.id === 'tab-grafico') cargarGrafico();
+    }, 30000);
   </script>
 </body>
 </html>
