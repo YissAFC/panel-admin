@@ -7,8 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    /* ── Temas ── */
     [data-theme="dark"] {
       --bg: #0a0a0f; --surface: #12121a; --surface2: #1a1a25;
       --border: #1e1e2e; --accent: #e94560; --text: #e8e8f0;
@@ -21,11 +19,8 @@
       --muted: #888899; --success: #16a34a; --warning: #d97706; --error: #dc2626;
       --grid-color: rgba(233,69,96,0.03);
     }
-
     body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; min-height: 100vh; transition: background 0.3s, color 0.3s; }
     body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
-
-    /* ── Nav ── */
     nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; transition: background 0.3s; }
     .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; letter-spacing: 0.05em; text-transform: uppercase; }
     .nav-logo span { color: var(--accent); }
@@ -36,24 +31,18 @@
     .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
     .theme-btn { font-size: 16px; padding: 6px 10px; border: 1px solid var(--border); background: transparent; border-radius: 2px; cursor: pointer; transition: all 0.2s; }
     .theme-btn:hover { border-color: var(--accent); }
-
-    /* ── Tabs ── */
-    .tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+    .tabs { display: flex; margin-bottom: 24px; border-bottom: 1px solid var(--border); overflow-x: auto; }
     .tab { background: transparent; border: none; color: var(--muted); padding: 10px 16px; font-family: 'Segoe UI', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
     .tab:hover { color: var(--text); }
     .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-
-    /* ── Main ── */
     main { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
     @media(min-width: 600px) { main { padding: 40px 24px; } }
     .page-header { margin-bottom: 24px; }
     h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; }
     @media(min-width: 600px) { h1 { font-size: 28px; } }
     .page-sub { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
-
-    /* ── Stats ── */
     .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
     .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 14px 16px; position: relative; overflow: hidden; transition: background 0.3s; }
     .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
@@ -66,17 +55,11 @@
     .stat-card.green .stat-value { color: var(--success); }
     .stat-card.yellow .stat-value { color: var(--warning); }
     .stat-card.red .stat-value { color: var(--error); }
-
-    /* ── Topbar usuarios ── */
     .users-topbar { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
     @media(min-width: 700px) { .users-topbar { flex-direction: row; align-items: center; } }
     .users-topbar-left { display: flex; gap: 8px; align-items: center; flex: 1; flex-wrap: wrap; }
     .users-topbar-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .search-input, .add-input, #sortSelect {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 2px;
-      padding: 8px 12px; color: var(--text); font-family: 'Space Mono', monospace;
-      font-size: 11px; outline: none; transition: border-color 0.2s, background 0.3s;
-    }
+    .search-input, .add-input, #sortSelect { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 8px 12px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 11px; outline: none; transition: border-color 0.2s, background 0.3s; }
     .search-input { flex: 1; min-width: 140px; }
     .add-input { flex: 1; min-width: 140px; }
     .search-input:focus, .add-input:focus, #sortSelect:focus { border-color: var(--accent); }
@@ -84,8 +67,6 @@
     #sortSelect { cursor: pointer; }
     #sortSelect option { background: var(--surface); color: var(--text); }
     .add-msg { font-family: 'Space Mono', monospace; font-size: 11px; min-height: 16px; margin-bottom: 8px; }
-
-    /* ── Buttons ── */
     .btn { padding: 7px 12px; border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.05em; cursor: pointer; border: 1px solid; transition: all 0.2s; text-transform: uppercase; white-space: nowrap; }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
@@ -104,13 +85,9 @@
     .btn-cyan:hover:not(:disabled) { background: rgba(34,211,238,0.1); }
     .btn-nota { background: rgba(137,180,250,0.1); border-color: #89b4fa; color: #89b4fa; }
     .btn-nota:hover { background: rgba(137,180,250,0.2); }
-
-    /* ── Card ── */
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; margin-bottom: 16px; transition: background 0.3s; }
     .card-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .card-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
-
-    /* ── User rows ── */
     .users-list { padding: 4px 0; }
     .user-row { padding: 12px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
     @media(min-width: 600px) { .user-row { padding: 14px 24px; } }
@@ -132,12 +109,6 @@
     .badge-inactive { background: rgba(248,113,113,0.1); color: var(--error); border: 1px solid rgba(248,113,113,0.2); }
     .user-actions { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; width: 100%; }
     @media(min-width: 700px) { .user-actions { width: auto; margin-top: 0; } }
-
-    /* ── Reset bar ── */
-    .reset-bar { background: rgba(233,69,96,0.05); border: 1px solid rgba(233,69,96,0.2); border-radius: 2px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
-    .reset-bar-text { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
-
-    /* ── Modal ── */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 16px; }
     .modal-overlay.show { opacity: 1; pointer-events: all; }
     .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 24px; width: 100%; max-width: 400px; position: relative; transition: background 0.3s; }
@@ -146,8 +117,6 @@
     .modal textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 2px; padding: 10px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 12px; outline: none; resize: vertical; min-height: 80px; transition: border-color 0.2s, background 0.3s; }
     .modal textarea:focus { border-color: var(--accent); }
     .modal-actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
-
-    /* ── Gráfico ── */
     .chart-container { padding: 20px; overflow-x: auto; }
     .chart-inner { min-width: 400px; }
     .chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 120px; margin-bottom: 6px; }
@@ -156,8 +125,9 @@
     .chart-bar:hover { opacity: 1; }
     .chart-bar-val { font-family: 'Space Mono', monospace; font-size: 8px; color: var(--muted); margin-bottom: 3px; }
     .chart-empty { text-align: center; padding: 40px; font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); }
-
-    /* ── Logs ── */
+    .empty-state, .loading-state { text-align: center; padding: 40px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
+    .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .log-row { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 10px; gap: 10px; flex-wrap: wrap; }
     @media(min-width: 600px) { .log-row { font-size: 11px; padding: 10px 24px; gap: 16px; flex-wrap: nowrap; } }
     .log-row:last-child { border-bottom: none; }
@@ -168,14 +138,10 @@
     .log-action.ocultar { color: #a78bfa; }
     .log-action.mostrar { color: #22d3ee; }
     .log-action.cerrar { color: var(--error); }
-    .log-date { color: var(--muted); font-size: 10px; }
-
-    /* ── Estados ── */
-    .empty-state, .loading-state { text-align: center; padding: 40px 24px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; }
-    .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Toast ── */
+    .log-date { color: var(--muted); font-size: 10px; flex: 1; }
+    .log-ip { color: #a78bfa; font-size: 10px; }
+    .reset-bar { background: rgba(233,69,96,0.05); border: 1px solid rgba(233,69,96,0.2); border-radius: 2px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+    .reset-bar-text { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
     .toast { position: fixed; bottom: 16px; right: 16px; left: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 12px 20px; font-family: 'Space Mono', monospace; font-size: 12px; transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); z-index: 999; text-align: center; }
     @media(min-width: 500px) { .toast { left: auto; width: auto; max-width: 360px; text-align: left; } }
     .toast.show { transform: translateY(0); opacity: 1; }
@@ -211,7 +177,6 @@
       <button class="tab" onclick="switchTab('logs', this)">Logs</button>
     </div>
 
-    <!-- Tab Usuarios -->
     <div class="tab-content active" id="tab-usuarios">
       <div class="reset-bar">
         <span class="reset-bar-text">⚡ Resetear todos los usuarios en uso</span>
@@ -221,7 +186,7 @@
         <div class="users-topbar-left">
           <input type="text" class="search-input" id="searchInput" placeholder="🔍 Buscar..." oninput="filtrarUsuarios()" />
           <select id="sortSelect" onchange="ordenarUsuarios()">
-            <option value="nombre">A → Z</option>
+            <option value="nombre">A→Z</option>
             <option value="usos">Más usos</option>
             <option value="ultimo_uso">Último uso</option>
             <option value="estado">Por estado</option>
@@ -245,7 +210,6 @@
       </div>
     </div>
 
-    <!-- Tab Gráfico -->
     <div class="tab-content" id="tab-grafico">
       <div class="card">
         <div class="card-header">
@@ -258,7 +222,6 @@
       </div>
     </div>
 
-    <!-- Tab Logs -->
     <div class="tab-content" id="tab-logs">
       <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
         <button class="btn btn-outline" onclick="cargarLogs()">↻ Actualizar</button>
@@ -271,7 +234,6 @@
     </div>
   </main>
 
-  <!-- Modal nota -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
       <h3>📝 Nota del usuario</h3>
@@ -370,7 +332,9 @@
         snap.forEach(d => todosUsuarios.push({ id: d.id, ...d.data() }));
         actualizarStats(todosUsuarios);
         renderUsuarios(todosUsuarios);
-      } catch (e) { lista.innerHTML = '<div class="empty-state">Error al cargar usuarios.</div>'; }
+      } catch (e) {
+        lista.innerHTML = '<div class="empty-state">Error al cargar usuarios.</div>';
+      }
     };
 
     function actualizarStats(users) {
@@ -392,6 +356,7 @@
         const tiempoRest = enUso ? calcularTiempoRestante(u.ultimo_uso) : null;
         const urgente    = tiempoRest && tiempoRest.startsWith('0h');
         const nota       = u.nota || '';
+        const ip         = u.ultima_ip || '';
         const toggleBtn  = u.activo
           ? `<button class="btn btn-warning" onclick="toggleUsuario('${u.id}', false)">Desactivar</button>`
           : `<button class="btn btn-success" onclick="toggleUsuario('${u.id}', true)">Activar</button>`;
@@ -403,6 +368,8 @@
           ? `<button class="btn btn-danger" onclick="eliminarUsuario('${u.id}')">Eliminar</button>` : '';
         const timerHtml = tiempoRest
           ? `<div class="user-meta-item"><span class="timer-badge ${urgente ? 'urgent' : ''}">⏱ ${tiempoRest}</span></div>` : '';
+        const ipHtml = ip
+          ? `<div class="user-meta-item">🌐 <span>${ip}</span></div>` : '';
         return `
           <div class="user-row">
             <div class="user-top">
@@ -423,6 +390,7 @@
               <div class="user-meta-item">📅 <span>${fechaFmt ? `Último uso: ${fechaFmt}` : 'Sin uso registrado'}</span></div>
               <div class="user-meta-item">🔢 <span>Usos: ${usos}</span></div>
               ${timerHtml}
+              ${ipHtml}
             </div>
           </div>`;
       }).join('');
@@ -492,7 +460,7 @@
         const ref = doc(db, 'usuarios', nombre);
         const existe = await getDoc(ref);
         if (existe.exists()) { msg.style.color = 'var(--error)'; msg.textContent = '⚠ Este usuario ya existe'; return; }
-        await setDoc(ref, { activo: true, en_uso: false, usos: 0, comando: '', nota: '' });
+        await setDoc(ref, { activo: true, en_uso: false, usos: 0, comando: '', nota: '', ultima_ip: '' });
         input.value = '';
         msg.style.color = 'var(--success)';
         msg.textContent = `✓ Usuario "${nombre}" creado`;
@@ -521,23 +489,21 @@
       } catch (e) { showToast('Error al eliminar', 'error'); }
     };
 
-window.resetearTodos = async function() {
-  if (!confirm('¿Activar todos los usuarios que están en uso?')) return;
-  try {
-    const snap = await getDocs(collection(db, 'usuarios'));
-    const batch = writeBatch(db);
-    snap.forEach(d => {
-      if (d.data().en_uso || !d.data().activo) {
-          batch.update(doc(db, 'usuarios', d.id), { 
-      activo: true, 
-      en_uso: false, 
-      nota: '' 
-    });
-    await batch.commit();
-    showToast('Todos los usuarios reseteados ✓', 'success');
-    cargarUsuarios();
-  } catch (e) { showToast('Error al resetear', 'error'); }
-};
+    window.resetearTodos = async function() {
+      if (!confirm('¿Activar todos los usuarios que están en uso?')) return;
+      try {
+        const snap = await getDocs(collection(db, 'usuarios'));
+        const batch = writeBatch(db);
+        snap.forEach(d => {
+          if (d.data().en_uso || !d.data().activo) {
+            batch.update(doc(db, 'usuarios', d.id), { activo: true, en_uso: false, nota: '' });
+          }
+        });
+        await batch.commit();
+        showToast('Todos los usuarios reseteados ✓', 'success');
+        cargarUsuarios();
+      } catch (e) { showToast('Error al resetear', 'error'); }
+    };
 
     window.cargarGrafico = async function() {
       const container = document.getElementById('chartContainer');
@@ -588,13 +554,13 @@ window.resetearTodos = async function() {
         const logs = [];
         snap.forEach(d => logs.push({ id: d.id, ...d.data() }));
         if (logs.length === 0) { lista.innerHTML = '<div class="empty-state">No hay logs registrados.</div>'; return; }
-      lista.innerHTML = logs.map(l => `
-      <div class="log-row">
-        <span class="log-user">${l.usuario}</span>
-        <span class="log-action ${l.accion}">${l.accion}</span>
-        <span class="log-date">${l.fecha}</span>
-        ${l.ip ? `<span style="font-family:'Space Mono',monospace;font-size:10px;color:#a78bfa;">🌐 ${l.ip}</span>` : ''}
-      </div>`).join('');
+        lista.innerHTML = logs.map(l => `
+          <div class="log-row">
+            <span class="log-user">${l.usuario}</span>
+            <span class="log-action ${l.accion}">${l.accion}</span>
+            <span class="log-date">${l.fecha}</span>
+            ${l.ip ? `<span class="log-ip">🌐 ${l.ip}</span>` : ''}
+          </div>`).join('');
       } catch (e) { lista.innerHTML = '<div class="empty-state">Error al cargar logs.</div>'; }
     };
 
@@ -618,13 +584,17 @@ window.resetearTodos = async function() {
       setTimeout(() => t.className = 'toast', 3000);
     };
 
-    document.getElementById('newUser')?.addEventListener('keydown', e => { if (e.key === 'Enter') window.agregarUsuario(); });
-    // Auto-actualizar cada 30 segundos
+    document.getElementById('newUser')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') window.agregarUsuario();
+    });
+
+    // ── Auto-actualizar cada 30 segundos ──────────────────────────────────
     setInterval(() => {
       const tabActiva = document.querySelector('.tab-content.active');
+      if (!tabActiva) return;
       if (tabActiva.id === 'tab-usuarios') cargarUsuarios();
-      if (tabActiva.id === 'tab-logs')    cargarLogs();
-      if (tabActiva.id === 'tab-grafico') cargarGrafico();
+      if (tabActiva.id === 'tab-logs')     cargarLogs();
+      if (tabActiva.id === 'tab-grafico')  cargarGrafico();
     }, 30000);
   </script>
 </body>
