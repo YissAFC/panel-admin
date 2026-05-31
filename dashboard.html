@@ -521,17 +521,21 @@
       } catch (e) { showToast('Error al eliminar', 'error'); }
     };
 
-    window.resetearTodos = async function() {
-      if (!confirm('¿Activar todos los usuarios que están en uso?')) return;
-      try {
-        const snap = await getDocs(collection(db, 'usuarios'));
-        const batch = writeBatch(db);
-        snap.forEach(d => { if (d.data().en_uso || !d.data().activo) batch.update(doc(db, 'usuarios', d.id), { activo: true, en_uso: false }); });
-        await batch.commit();
-        showToast('Todos los usuarios reseteados ✓', 'success');
-        cargarUsuarios();
-      } catch (e) { showToast('Error al resetear', 'error'); }
-    };
+window.resetearTodos = async function() {
+  if (!confirm('¿Activar todos los usuarios que están en uso?')) return;
+  try {
+    const snap = await getDocs(collection(db, 'usuarios'));
+    const batch = writeBatch(db);
+    snap.forEach(d => {
+      if (d.data().en_uso || !d.data().activo) {
+        batch.update(doc(db, 'usuarios', d.id), { activo: true, en_uso: false, nota: '' });
+      }
+    });
+    await batch.commit();
+    showToast('Todos los usuarios reseteados ✓', 'success');
+    cargarUsuarios();
+  } catch (e) { showToast('Error al resetear', 'error'); }
+};
 
     window.cargarGrafico = async function() {
       const container = document.getElementById('chartContainer');
