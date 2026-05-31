@@ -196,28 +196,6 @@
         <div class="users-topbar-right">
           <input type="text" class="add-input" id="newUser" placeholder="Nuevo usuario..." />
           <button class="btn btn-primary" onclick="agregarUsuario()">+ Agregar</button>
-          <textarea
-      id="bulkUsers"
-      placeholder="Un usuario por línea..."
-      style="
-        width:100%;
-        min-height:120px;
-        margin-top:10px;
-        background:var(--surface);
-        color:var(--text);
-        border:1px solid var(--border);
-        padding:10px;
-        font-family:'Space Mono', monospace;
-      "
-    ></textarea>
-    
-    <button
-      class="btn btn-primary"
-      style="margin-top:8px;"
-      onclick="agregarUsuariosMasivos()"
-    >
-      📥 Importar usuarios
-    </button>
         </div>
       </div>
       <div class="add-msg" id="addMsg"></div>
@@ -608,68 +586,6 @@
     document.getElementById('newUser')?.addEventListener('keydown', e => {
       if (e.key === 'Enter') window.agregarUsuario();
     });
-
-    window.agregarUsuariosMasivos = async function() {
-
-      const texto = document.getElementById('bulkUsers').value.trim();
-    
-      if (!texto) {
-        showToast('No hay usuarios para importar', 'error');
-        return;
-      }
-    
-      const usuarios = texto
-        .split('\n')
-        .map(u => u.trim())
-        .filter(u => u.length > 0);
-    
-      let creados = 0;
-      let existentes = 0;
-    
-      try {
-    
-        for (const nombre of usuarios) {
-    
-          const ref = doc(db, 'usuarios', nombre);
-    
-          const existe = await getDoc(ref);
-    
-          if (existe.exists()) {
-            existentes++;
-            continue;
-          }
-    
-          await setDoc(ref, {
-            activo: true,
-            en_uso: false,
-            usos: 0,
-            comando: '',
-            nota: '',
-            ultima_ip: ''
-          });
-    
-          creados++;
-        }
-    
-        showToast(
-          `✓ ${creados} usuarios creados | ${existentes} ya existían`,
-          'success'
-        );
-    
-        document.getElementById('bulkUsers').value = '';
-    
-        cargarUsuarios();
-    
-      } catch (e) {
-    
-        console.error(e);
-    
-        showToast(
-          'Error al importar usuarios',
-          'error'
-        );
-      }
-    };
     
   </script>
 </body>
