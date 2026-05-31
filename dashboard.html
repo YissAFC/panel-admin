@@ -528,8 +528,10 @@ window.resetearTodos = async function() {
     const batch = writeBatch(db);
     snap.forEach(d => {
       if (d.data().en_uso || !d.data().activo) {
-        batch.update(doc(db, 'usuarios', d.id), { activo: true, en_uso: false, nota: '' });
-      }
+          batch.update(doc(db, 'usuarios', d.id), { 
+      activo: true, 
+      en_uso: false, 
+      nota: '' 
     });
     await batch.commit();
     showToast('Todos los usuarios reseteados ✓', 'success');
