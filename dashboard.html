@@ -196,6 +196,7 @@
         <div class="users-topbar-right">
           <input type="text" class="add-input" id="newUser" placeholder="Nuevo usuario..." />
           <button class="btn btn-primary" onclick="agregarUsuario()">+ Agregar</button>
+          <button class="btn btn-outline" onclick="abrirModalMasivo()">+ Masivo</button>
         </div>
       </div>
       <div class="add-msg" id="addMsg"></div>
@@ -232,6 +233,17 @@
         <div id="logsList"><div class="loading-state"><div class="spinner"></div>Cargando...</div></div>
       </div>
     </div>
+    <div class="modal-overlay" id="modalMasivo">
+  <div class="modal">
+    <h3>📋 Importar</h3>
+    <p style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;">Un usuario por línea</p>
+    <textarea id="txtMasivo" placeholder="juan&#10;maria&#10;pedro&#10;ana" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:2px;padding:10px 14px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;outline:none;resize:vertical;min-height:120px;"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="cerrarModalMasivo()">Cancelar</button>
+      <button class="btn btn-primary" onclick="agregarMasivo()">Agregar todos</button>
+    </div>
+  </div>
+</div>
   </main>
 
   <div class="modal-overlay" id="modalOverlay">
@@ -504,6 +516,45 @@
       } catch (e) { showToast('Error al resetear', 'error'); }
     };
 
+    window.abrirModalMasivo = function() {
+  document.getElementById('txtMasivo').value = '';
+  document.getElementById('modalMasivo').classList.add('show');
+};
+
+window.cerrarModalMasivo = function() {
+  document.getElementById('modalMasivo').classList.remove('show');
+};
+
+window.agregarMasivo = async function() {
+  const texto = document.getElementById('txtMasivo').value.trim();
+  if (!texto) return;
+  const nombres = texto.split('\n').map(n => n.trim()).filter(n => n.length > 0);
+  if (nombres.length === 0) return;
+
+  const btn = document.querySelector('#modalMasivo .btn-primary');
+  btn.disabled = true;
+  btn.textContent = 'Agregando...';
+
+  let creados = 0;
+  let duplicados = 0;
+
+  for (const nombre of nombres) {
+    try {
+      const ref = doc(db, 'usuarios', nombre);
+      const existe = await getDoc(ref);
+      if (existe.exists()) { duplicados++; continue; }
+      await setDoc(ref, { activo: true, en_uso: false, usos: 0, comando: '', nota: '', ultima_ip: '' });
+      creados++;
+    } catch (e) {}
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Agregar todos';
+  cerrarModalMasivo();
+  cargarUsuarios();
+  showToast(`✓ ${creados} creados, ${duplicados} duplicados`, 'success');
+};
+    
     window.cargarGrafico = async function() {
       const container = document.getElementById('chartContainer');
       container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Cargando...</div>';
