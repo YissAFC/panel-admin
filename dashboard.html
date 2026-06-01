@@ -179,9 +179,18 @@
 
     <div class="tab-content active" id="tab-usuarios">
       <div class="reset-bar">
-        <span class="reset-bar-text">⚡ Resetear todos los usuarios en uso</span>
-        <button class="btn btn-warning" onclick="resetearTodos()">↺ Resetear todos</button>
+      <span class="reset-bar-text">⚡ Gestión masiva de usuarios</span>
+    
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-warning" onclick="resetearTodos()">
+          ↺ Resetear todos
+        </button>
+    
+        <button class="btn btn-danger" onclick="eliminarTodosUsuarios()">
+          🗑 Eliminar todos
+        </button>
       </div>
+</div>
       <div class="users-topbar">
         <div class="users-topbar-left">
           <input type="text" class="search-input" id="searchInput" placeholder="🔍 Buscar..." oninput="filtrarUsuarios()" />
@@ -514,6 +523,44 @@
         showToast('Todos los usuarios reseteados ✓', 'success');
         cargarUsuarios();
       } catch (e) { showToast('Error al resetear', 'error'); }
+    };
+
+    window.eliminarTodosUsuarios = async function() {
+
+      const confirmar = prompt(
+        '⚠️ ESTA ACCIÓN ELIMINARÁ TODOS LOS USUARIOS.\n\nEscribe ELIMINAR para continuar:'
+      );
+    
+      if (confirmar !== 'ELIMINAR') {
+        showToast('Operación cancelada', 'error');
+        return;
+      }
+    
+      try {
+    
+        const snap = await getDocs(collection(db, 'usuarios'));
+    
+        if (snap.empty) {
+          showToast('No hay usuarios para eliminar', 'error');
+          return;
+        }
+    
+        const batch = writeBatch(db);
+    
+        snap.forEach(docSnap => {
+          batch.delete(doc(db, 'usuarios', docSnap.id));
+        });
+    
+        await batch.commit();
+    
+        showToast('Todos los usuarios fueron eliminados ✓', 'success');
+    
+        cargarUsuarios();
+    
+      } catch (e) {
+        showToast('Error al eliminar usuarios', 'error');
+        console.error(e);
+      }
     };
 
     window.abrirModalMasivo = function() {
