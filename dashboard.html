@@ -625,15 +625,32 @@
     };
 
     // ── Auth ──────────────────────────────────────────────────────────────
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) { window.location.href = 'index.html'; return; }
-      const adminDoc = await getDoc(doc(db, 'admins', user.email));
-      if (!adminDoc.exists() || !adminDoc.data().activo) {
-        await signOut(auth); window.location.href = 'index.html'; return;
-      }
-      document.getElementById('adminEmail').textContent = user.email;
-      cargarUsuarios();
-    });
+onAuthStateChanged(auth, async (user) => {
+  console.log("USER:", user);
+
+  if (!user) {
+    console.log("NO USER");
+    return;
+  }
+
+  console.log("EMAIL:", user.email);
+
+  try {
+    const adminDoc = await getDoc(doc(db, 'admins', user.email));
+
+    console.log("ADMIN DOC:", adminDoc.exists());
+
+    if (!adminDoc.exists()) {
+      console.log("ADMIN NO EXISTE");
+      return;
+    }
+
+    console.log(adminDoc.data());
+
+  } catch (e) {
+    console.error("ERROR FIREBASE:", e);
+  }
+});
 
     window.switchTab = function(tab, el) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
