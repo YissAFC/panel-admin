@@ -455,17 +455,26 @@
     };
     document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) cerrarModal(); });
 
-    window.enviarComando = async function(id, comando) {
-      try {
-        await updateDoc(doc(db, 'usuarios', id), { comando });
-        const ahora = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima', hour12: false });
-        await fetch(`https://firestore.googleapis.com/v1/projects/ocultador-auth/databases/(default)/documents/logs?key=AIzaSyCmbktRxMEB4Udn_bmmEqjrgOy1giKaPX0`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields: { usuario: { stringValue: id }, fecha: { stringValue: ahora }, accion: { stringValue: comando } }})
-        });
-        showToast(`Comando "${comando}" enviado a "${id}"`, 'success');
-      } catch (e) { showToast('Error al enviar comando', 'error'); }
-    };
+window.enviarComando = async function(id, comando) {
+  try {
+    const ref = doc(db, 'usuarios', id);
+    if (comando === 'ocultar') {
+      await updateDoc(ref, { comando, bloqueado: true });
+    } else if (comando === 'mostrar') {
+      await updateDoc(ref, { comando, bloqueado: false });
+    } else {
+      await updateDoc(ref, { comando });
+    }
+
+    const ahora = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima', hour12: false });
+    await fetch(`https://firestore.googleapis.com/v1/projects/ocultador-auth/databases/(default)/documents/logs?key=AIzaSyCmbktRxMEB4Udn_bmmEqjrgOy1giKaPX0`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields: { usuario: { stringValue: id }, fecha: { stringValue: ahora }, accion: { stringValue: comando } }})
+    });
+    showToast(`Comando "${comando}" enviado a "${id}"`, 'success');
+  } catch (e) { showToast('Error al enviar comando', 'error'); }
+};
+
     window.confirmarCerrar = function(id) {
       if (!confirm(`¿Cerrar el .exe de "${id}" remotamente?`)) return;
       window.enviarComando(id, 'cerrar');
