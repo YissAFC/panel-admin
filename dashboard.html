@@ -476,17 +476,16 @@
 
 window.enviarComando = async function(id, comando) {
   try {
-    // envia el comando a Realtime Database para respuesta inmediata
+    // Escribe comando en Realtime Database para respuesta inmediata
     await set(ref(rtdb, `usuarios/${id}/comando`), comando);
 
-    // actualizar bloqueado para sincronizar estado
-    if (comando === 'ocultar') {
-      await set(ref(rtdb, `usuarios/${id}/bloqueado`), true);
-    } else if (comando === 'mostrar') {
-      await set(ref(rtdb, `usuarios/${id}/bloqueado`), false);
-    }
+    // Sincroniza bloqueo en Firestore
+    if (comando === 'ocultar')
+      await updateDoc(doc(db, 'usuarios', id), { bloqueado: true });
+    else if (comando === 'mostrar')
+      await updateDoc(doc(db, 'usuarios', id), { bloqueado: false });
 
-    // también sigue guardando log en Firestore igual que antes
+    // Guarda log en Firestore como antes
     const ahora = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima', hour12: false });
     await fetch(`https://firestore.googleapis.com/v1/projects/ocultador-auth/databases/(default)/documents/logs?key=AIzaSyCmbktRxMEB4Udn_bmmEqjrgOy1giKaPX0`, {
       method: 'POST',
@@ -499,6 +498,7 @@ window.enviarComando = async function(id, comando) {
     showToast('Error al enviar comando', 'error');
   }
 };
+
 
 
     window.confirmarCerrar = function(id) {
