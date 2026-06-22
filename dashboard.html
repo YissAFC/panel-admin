@@ -474,18 +474,23 @@
     };
     document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) cerrarModal(); });
 
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const rtdb = getDatabase(app);  // Asegúrate que app es la instancia de Firebase inicializada
+
 window.enviarComando = async function(id, comando) {
   try {
-    // Escribe comando en Realtime Database para respuesta inmediata
+    // Escribe el comando en Realtime Database para respuesta inmediata
     await set(ref(rtdb, `usuarios/${id}/comando`), comando);
 
-    // Sincroniza bloqueo en Firestore
-    if (comando === 'ocultar')
+    // Sincroniza el campo bloqueado en Firestore si quieres mantener estado consistente
+    if (comando === 'ocultar') {
       await updateDoc(doc(db, 'usuarios', id), { bloqueado: true });
-    else if (comando === 'mostrar')
+    } else if (comando === 'mostrar') {
       await updateDoc(doc(db, 'usuarios', id), { bloqueado: false });
+    }
 
-    // Guarda log en Firestore como antes
+    // Mantén el registro de logs en Firestore como antes
     const ahora = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima', hour12: false });
     await fetch(`https://firestore.googleapis.com/v1/projects/ocultador-auth/databases/(default)/documents/logs?key=AIzaSyCmbktRxMEB4Udn_bmmEqjrgOy1giKaPX0`, {
       method: 'POST',
@@ -498,6 +503,7 @@ window.enviarComando = async function(id, comando) {
     showToast('Error al enviar comando', 'error');
   }
 };
+
 
 
 
