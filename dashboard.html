@@ -272,20 +272,39 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, writeBatch, orderBy, query, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      doc,
+      setDoc,
+      updateDoc,
+      deleteDoc,
+      getDoc,
+      writeBatch,
+      orderBy,
+      query,
+      limit
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    
     const firebaseConfig = {
       apiKey: "AIzaSyCmbktRxMEB4Udn_bmmEqjrgOy1giKaPX0",
       authDomain: "ocultador-auth.firebaseapp.com",
       projectId: "ocultador-auth",
       storageBucket: "ocultador-auth.firebasestorage.app",
       messagingSenderId: "524437270376",
-      appId: "1:524437270376:web:87f2184e42b26d3b29b0dd"
+      appId: "1:524437270376:web:87f2184e42b26d3b29b0dd",
+      databaseURL: "https://ocultador-auth-default-rtdb.europe-west1.firebasedatabase.app"
     };
+    
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const rtdb = getDatabase(app);  // instancia para Realtime Database
+    
     let todosUsuarios = [];
+
 
     // ── Tema ──────────────────────────────────────────────────────────────
     const temaGuardado = localStorage.getItem('tema') || 'dark';
@@ -457,23 +476,30 @@
 
 window.enviarComando = async function(id, comando) {
   try {
-    const ref = doc(db, 'usuarios', id);
+    // envia el comando a Realtime Database para respuesta inmediata
+    await set(ref(rtdb, `usuarios/${id}/comando`), comando);
+
+    // actualizar bloqueado para sincronizar estado
     if (comando === 'ocultar') {
-      await updateDoc(ref, { comando, bloqueado: true });
+      await set(ref(rtdb, `usuarios/${id}/bloqueado`), true);
     } else if (comando === 'mostrar') {
-      await updateDoc(ref, { comando, bloqueado: false });
-    } else {
-      await updateDoc(ref, { comando });
+      await set(ref(rtdb, `usuarios/${id}/bloqueado`), false);
     }
 
+    // también sigue guardando log en Firestore igual que antes
     const ahora = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima', hour12: false });
     await fetch(`https://firestore.googleapis.com/v1/projects/ocultador-auth/databases/(default)/documents/logs?key=AIzaSyCmbktRxMEB4Udn_bmmEqjrgOy1giKaPX0`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fields: { usuario: { stringValue: id }, fecha: { stringValue: ahora }, accion: { stringValue: comando } }})
     });
+
     showToast(`Comando "${comando}" enviado a "${id}"`, 'success');
-  } catch (e) { showToast('Error al enviar comando', 'error'); }
+  } catch (e) {
+    showToast('Error al enviar comando', 'error');
+  }
 };
+
 
     window.confirmarCerrar = function(id) {
       if (!confirm(`¿Cerrar el .exe de "${id}" remotamente?`)) return;
