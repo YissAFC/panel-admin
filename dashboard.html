@@ -489,7 +489,7 @@ window.enviarComando = async function(id, comando) {
         const ref = doc(db, 'usuarios', nombre);
         const existe = await getDoc(ref);
         if (existe.exists()) { msg.style.color = 'var(--error)'; msg.textContent = '⚠ Este usuario ya existe'; return; }
-        await setDoc(ref, { activo: true, en_uso: false, usos: 0, comando: '', nota: '', ultima_ip: '' });
+        await setDoc(ref, { activo: true, en_uso: false, usos: 0, comando: '', nota: '', ultima_ip: '', bloqueado: false });
         input.value = '';
         msg.style.color = 'var(--success)';
         msg.textContent = `✓ Usuario "${nombre}" creado`;
